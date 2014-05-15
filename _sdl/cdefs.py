@@ -8,6 +8,8 @@ typedef struct _FILE FILE;
 
 ffi.cdef("""
 
+typedef int32_t va_list; // XXX
+
 const char * SDL_GetPlatform (void);
 typedef enum
 {
@@ -22,19 +24,7 @@ typedef int32_t Sint32;
 typedef uint32_t Uint32;
 typedef int64_t Sint64;
 typedef uint64_t Uint64;
-typedef int SDL_dummy_uint8[(sizeof(Uint8) == 1) * 2 - 1];
-typedef int SDL_dummy_sint8[(sizeof(Sint8) == 1) * 2 - 1];
-typedef int SDL_dummy_uint16[(sizeof(Uint16) == 2) * 2 - 1];
-typedef int SDL_dummy_sint16[(sizeof(Sint16) == 2) * 2 - 1];
-typedef int SDL_dummy_uint32[(sizeof(Uint32) == 4) * 2 - 1];
-typedef int SDL_dummy_sint32[(sizeof(Sint32) == 4) * 2 - 1];
-typedef int SDL_dummy_uint64[(sizeof(Uint64) == 8) * 2 - 1];
-typedef int SDL_dummy_sint64[(sizeof(Sint64) == 8) * 2 - 1];
-typedef enum
-{
-    DUMMY_ENUM_VALUE
-} SDL_DUMMY_ENUM;
-typedef int SDL_dummy_enum[(sizeof(SDL_DUMMY_ENUM) == sizeof(int)) * 2 - 1];
+
 void * SDL_malloc(size_t size);
 void * SDL_calloc(size_t nmemb, size_t size);
 void * SDL_realloc(void *mem, size_t size);
@@ -195,38 +185,39 @@ typedef enum {
 typedef int ( * SDL_ThreadFunction) (void *data);
 """)
 
-# if jit.os == 'Windows' then
-ffi.cdef("""
+# XXX do we need the SDL thread routines in Python?
+if False: # Windows
+    ffi.cdef("""
 
-typedef uintptr_t (*pfnSDL_CurrentBeginThread) (void *, unsigned,
-                        unsigned (*func)(void*),
-                        void *arg, unsigned,
-                        unsigned *threadID);
+    typedef uintptr_t (*pfnSDL_CurrentBeginThread) (void *, unsigned,
+                            unsigned (*func)(void*),
+                            void *arg, unsigned,
+                            unsigned *threadID);
 
-typedef void (*pfnSDL_CurrentEndThread) (unsigned code);
+    typedef void (*pfnSDL_CurrentEndThread) (unsigned code);
 
-uintptr_t _beginthreadex(void *, unsigned,
-             unsigned (*func)(void*),
-             void *arg, unsigned,
-             unsigned *threadID);
+    uintptr_t _beginthreadex(void *, unsigned,
+                 unsigned (*func)(void*),
+                 void *arg, unsigned,
+                 unsigned *threadID);
 
-void _endthreadex(unsigned retval);
+    void _endthreadex(unsigned retval);
 
-/* note: this fails. why?
-   pfnSDL_CurrentBeginThread _beginthreadex;
-   pfnSDL_CurrentEndThread _endthreadex;
-*/
+    /* note: this fails. why?
+       pfnSDL_CurrentBeginThread _beginthreadex;
+       pfnSDL_CurrentEndThread _endthreadex;
+    */
 
-SDL_Thread *
-SDL_CreateThread(SDL_ThreadFunction fn, const char *name, void *data,
-                 pfnSDL_CurrentBeginThread pfnBeginThread,
-                 pfnSDL_CurrentEndThread pfnEndThread);
-""")
-
-ffi.cdef("""
-SDL_Thread *
-SDL_CreateThread(SDL_ThreadFunction fn, const char *name, void *data);
-""")
+    SDL_Thread *
+    SDL_CreateThread(SDL_ThreadFunction fn, const char *name, void *data,
+                     pfnSDL_CurrentBeginThread pfnBeginThread,
+                     pfnSDL_CurrentEndThread pfnEndThread);
+    """)
+else:
+    ffi.cdef("""
+    SDL_Thread *
+    SDL_CreateThread(SDL_ThreadFunction fn, const char *name, void *data);
+    """)
 
 ffi.cdef("""
 const char * SDL_GetThreadName(SDL_Thread *thread);
@@ -322,7 +313,7 @@ typedef struct SDL_AudioCVT
     double len_ratio;
     SDL_AudioFilter filters[10];
     int filter_index;
-} __attribute__((packed)) SDL_AudioCVT;
+} SDL_AudioCVT;
 int SDL_GetNumAudioDrivers(void);
 const char * SDL_GetAudioDriver(int index);
 int SDL_AudioInit(const char *driver_name);

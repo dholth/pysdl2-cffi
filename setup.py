@@ -9,4 +9,5 @@ setup(name="pysdl2-cffi",
     summary = "SDL2 wrapper with cffi",
     license = "BSD",
     author="Daniel Holth",
-    author_email="dholth@fastmail.fm")
+    author_email="dholth@fastmail.fm",
+    url="https://bitbucket.org/dholth/pysdl2-cffi")

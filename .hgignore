@@ -4,3 +4,5 @@ syntax:glob
 *.orig
 *.pyc
 *.*-info
+build
+dist

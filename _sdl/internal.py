@@ -9,15 +9,6 @@ from functools import wraps
 from .cdefs import ffi
 from .dso import _LIB
 
-__all__ = [
-    'ffi',
-    'load_lib',
-    'lookup',
-    'check_error',
-    'guard',
-    'SDLError',
-]
-
 class SDLError(Exception):
     pass
 
@@ -1529,3 +1520,4 @@ register('WINDOWPOS_CENTERED', 'SDL_WINDOWPOS_CENTERED')
 
 from .pixelformats import * # overwrite some missing def's from register() calls
 from .constants import * # including things that would otherwise involve math in an enum declaration
+from .helpers import *

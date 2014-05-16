@@ -4,9 +4,6 @@ ffi = cffi.FFI()
 
 ffi.cdef("""
 typedef struct _FILE FILE;
-""")
-
-ffi.cdef("""
 
 typedef int32_t va_list; // XXX surely broken, but it makes it parse.
 

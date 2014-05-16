@@ -4,10 +4,6 @@ from __future__ import (print_function, division, absolute_import)
 class SDLError(Exception):
     pass
 
-import traceback
-import sys
-import os
-
 from functools import wraps
 
 from .cdefs import ffi
@@ -70,12 +66,8 @@ def guard(func):
     newfunc.__doc__ = func.__doc__
     return newfunc
 
-from collections import OrderedDict
-od = OrderedDict()
-
 def register(name, dsoname):
-    globals()[name] = guard(lookup(dsoname))
-    od[name] = '_sdl.internal:'+dsoname
+    globals()[dsoname] = guard(lookup(dsoname))
 
 register('getPlatform', 'SDL_GetPlatform')
 register('malloc', 'SDL_malloc')

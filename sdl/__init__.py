@@ -4,7 +4,7 @@ import apipkg
 apipkg.initpkg(__name__, {
 'ffi' : '_sdl.cdefs:ffi',
 'SDLError' : '_sdl.internal:SDLError',
-
+'getPlatform': '_sdl.internal:SDL_GetPlatform',
 'malloc' : '_sdl.internal:SDL_malloc',
 'calloc' : '_sdl.internal:SDL_calloc',
 'realloc' : '_sdl.internal:SDL_realloc',

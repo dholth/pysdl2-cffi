@@ -4,6 +4,8 @@ import apipkg
 apipkg.initpkg(__name__, {
 'ffi' : '_sdl.cdefs:ffi',
 'SDLError' : '_sdl.internal:SDLError',
+'image' : '_sdl_image.renamed',
+
 'ADDEVENT' : '_sdl.internal:SDL_ADDEVENT',
 'ALPHA_OPAQUE' : '_sdl.internal:SDL_ALPHA_OPAQUE',
 'ALPHA_TRANSPARENT' : '_sdl.internal:SDL_ALPHA_TRANSPARENT',

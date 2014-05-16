@@ -6,4 +6,5 @@ setup(name="pysdl2-cffi",
 	version = "0.0.1",
 	packages = [ 'sdl', '_sdl' ],
 	install_requires = [ 'cffi', 'apipkg' ],
-	summary = "SDL2 wrapper with cffi")
+	summary = "SDL2 wrapper with cffi",
+	license = "BSD")

@@ -1,4 +1,7 @@
-An SDL2 wrapper made with cffi.
+An SDL2 wrapper made with cffi. Faster on pypy.
 
-Adapted from https://github.com/torch/sdl2-ffi and
-https://bitbucket.org/duangle/pysdl-cffi
+Adapted from headers & wrapper functions from
+libSDL2,
+https://github.com/torch/sdl2-ffi,
+https://bitbucket.org/duangle/pysdl-cffi, and
+PySDL2.

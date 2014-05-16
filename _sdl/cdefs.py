@@ -8,7 +8,7 @@ typedef struct _FILE FILE;
 
 ffi.cdef("""
 
-typedef int32_t va_list; // XXX
+typedef int32_t va_list; // XXX surely broken, but it makes it parse.
 
 const char * SDL_GetPlatform (void);
 typedef enum
@@ -660,7 +660,6 @@ typedef enum
     SDL_WINDOW_INPUT_GRABBED = 0x00000100,
     SDL_WINDOW_INPUT_FOCUS = 0x00000200,
     SDL_WINDOW_MOUSE_FOCUS = 0x00000400,
-    SDL_WINDOW_FULLSCREEN_DESKTOP = ( SDL_WINDOW_FULLSCREEN | 0x00001000 ),
     SDL_WINDOW_FOREIGN = 0x00000800
 } SDL_WindowFlags;
 typedef enum
@@ -1858,7 +1857,7 @@ typedef enum
 } SDL_MessageBoxColorType;
 typedef struct
 {
-    SDL_MessageBoxColor colors[SDL_MESSAGEBOX_COLOR_MAX];
+    SDL_MessageBoxColor colors[5];
 } SDL_MessageBoxColorScheme;
 typedef struct
 {
@@ -2057,209 +2056,11 @@ void SDL_Quit(void);
 
 """)
 
-# sdl
-
-ffi.cdef("""
-enum {
-SDL_INIT_TIMER          = 0x00000001,
-SDL_INIT_AUDIO          = 0x00000010,
-SDL_INIT_VIDEO          = 0x00000020,
-SDL_INIT_JOYSTICK       = 0x00000200,
-SDL_INIT_HAPTIC         = 0x00001000,
-SDL_INIT_GAMECONTROLLER = 0x00002000,
-SDL_INIT_EVENTS         = 0x00004000,
-SDL_INIT_NOPARACHUTE    = 0x00100000,
-SDL_INIT_EVERYTHING     = ( \
-                SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_EVENTS | \
-                SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC | SDL_INIT_GAMECONTROLLER \
-            )
-};
-""")
-# audio
-
-ffi.cdef("""
-enum {
-SDL_AUDIO_MASK_BITSIZE       = (0xFF),
-SDL_AUDIO_MASK_DATATYPE      = (1<<8),
-SDL_AUDIO_MASK_ENDIAN        = (1<<12),
-SDL_AUDIO_MASK_SIGNED        = (1<<15)
-};
-
-enum {
-SDL_AUDIO_U8        = 0x0008,
-SDL_AUDIO_S8        = 0x8008,
-SDL_AUDIO_U16LSB    = 0x0010,
-SDL_AUDIO_S16LSB    = 0x8010,
-SDL_AUDIO_U16MSB    = 0x1010,
-SDL_AUDIO_S16MSB    = 0x9010,
-SDL_AUDIO_U16       = SDL_AUDIO_U16LSB,
-SDL_AUDIO_S16       = SDL_AUDIO_S16LSB,
-
-SDL_AUDIO_S32LSB    = 0x8020,
-SDL_AUDIO_S32MSB    = 0x9020,
-SDL_AUDIO_S32       = SDL_AUDIO_S32LSB,
-
-SDL_AUDIO_F32LSB    = 0x8120,
-SDL_AUDIO_F32MSB    = 0x9120,
-SDL_AUDIO_F32       = SDL_AUDIO_F32LSB
-};
-
-enum {
-SDL_AUDIO_ALLOW_FREQUENCY_CHANGE    = 0x00000001,
-SDL_AUDIO_ALLOW_FORMAT_CHANGE       = 0x00000002,
-SDL_AUDIO_ALLOW_CHANNELS_CHANGE     = 0x00000004,
-SDL_AUDIO_ALLOW_ANY_CHANGE          = (SDL_AUDIO_ALLOW_FREQUENCY_CHANGE|SDL_AUDIO_ALLOW_FORMAT_CHANGE|SDL_AUDIO_ALLOW_CHANNELS_CHANGE),
-SDL_MIX_MAXVOLUME = 128
-};
-
-""")
-
-# events
-
-ffi.cdef("""
-enum {
-SDL_RELEASED = 0,
-SDL_PRESSED  = 1,
-SDL_QUERY    = -1,
-SDL_IGNORE   = 0,
-SDL_DISABLE  = 0,
-SDL_ENABLE   = 1
-};
-""")
-
-# haptic
-
-ffi.cdef("""
-enum {
-SDL_HAPTIC_CONSTANT   = (1<<0),
-SDL_HAPTIC_SINE       = (1<<1),
-SDL_HAPTIC_LEFTRIGHT     = (1<<2),
-SDL_HAPTIC_TRIANGLE   = (1<<3),
-SDL_HAPTIC_SAWTOOTHUP = (1<<4),
-SDL_HAPTIC_SAWTOOTHDOWN = (1<<5),
-SDL_HAPTIC_RAMP       = (1<<6),
-SDL_HAPTIC_SPRING     = (1<<7),
-SDL_HAPTIC_DAMPER     = (1<<8),
-SDL_HAPTIC_INERTIA    = (1<<9),
-SDL_HAPTIC_FRICTION   = (1<<10),
-SDL_HAPTIC_CUSTOM     = (1<<11),
-SDL_HAPTIC_GAIN       = (1<<12),
-SDL_HAPTIC_AUTOCENTER = (1<<13),
-SDL_HAPTIC_STATUS     = (1<<14),
-SDL_HAPTIC_PAUSE      = (1<<15),
-SDL_HAPTIC_POLAR      = 0,
-SDL_HAPTIC_CARTESIAN  = 1,
-SDL_HAPTIC_SPHERICAL  = 2,
-SDL_HAPTIC_INFINITY   = 4294967295
-};
-""")
-
-# joystick
-
-ffi.cdef("""
-enum {
-SDL_HAT_CENTERED    = 0x00,
-SDL_HAT_UP          = 0x01,
-SDL_HAT_RIGHT       = 0x02,
-SDL_HAT_DOWN        = 0x04,
-SDL_HAT_LEFT        = 0x08,
-SDL_HAT_RIGHTUP     = (SDL_HAT_RIGHT|SDL_HAT_UP),
-SDL_HAT_RIGHTDOWN   = (SDL_HAT_RIGHT|SDL_HAT_DOWN),
-SDL_HAT_LEFTUP      = (SDL_HAT_LEFT|SDL_HAT_UP),
-SDL_HAT_LEFTDOWN    = (SDL_HAT_LEFT|SDL_HAT_DOWN)
-};
-""")
-
-# keycode
-
-ffi.cdef("""
-enum {
-SDL_SCANCODE_MASK = (1<<30),
-SDL_KMOD_CTRL = (SDL_KMOD_LCTRL|SDL_KMOD_RCTRL),
-SDL_KMOD_SHIFT = (SDL_KMOD_LSHIFT|SDL_KMOD_RSHIFT),
-SDL_KMOD_ALT = (SDL_KMOD_LALT|SDL_KMOD_RALT),
-SDL_KMOD_GUI = (SDL_KMOD_LGUI|SDL_KMOD_RGUI)
-};
-""")
-
 # main
-# if jit.os == 'Windows' then
+
+# Only for Windows:
 ffi.cdef("""
 int SDL_RegisterApp(char *name, Uint32 style,
                     void *hInst);
 void SDL_UnregisterApp(void);
    """)
-
-# mouse
-
-ffi.cdef("""
-enum {
-SDL_BUTTON_LEFT     = 1,
-SDL_BUTTON_MIDDLE   = 2,
-SDL_BUTTON_RIGHT    = 3,
-SDL_BUTTON_X1       = 4,
-SDL_BUTTON_X2       = 5,
-SDL_BUTTON_LMASK    = 1 << (SDL_BUTTON_LEFT-1),
-SDL_BUTTON_MMASK    = 1 << (SDL_BUTTON_MIDDLE-1),
-SDL_BUTTON_RMASK    = 1 << (SDL_BUTTON_RIGHT-1),
-SDL_BUTTON_X1MASK   = 1 << (SDL_BUTTON_X1-1),
-SDL_BUTTON_X2MASK   = 1 << (SDL_BUTTON_X2-1),
-};
-""")
-
-# mutex
-
-ffi.cdef("""
-enum {
-SDL_MUTEX_TIMEDOUT = 1,
-SDL_MUTEX_MAXWAIT = 0xffffffff
-};
-""")
-
-# pixels
-
-ffi.cdef("""
-enum {
-SDL_ALPHA_OPAQUE = 255,
-SDL_ALPHA_TRANSPARENT = 0
-};
-""")
-
-# rwops
-ffi.cdef("""
-enum {
-SDL_RWOPS_UNKNOWN   = 0,
-SDL_RWOPS_WINFILE   = 1,
-SDL_RWOPS_STDFILE   = 2,
-SDL_RWOPS_JNIFILE   = 3,
-SDL_RWOPS_MEMORY    = 4,
-SDL_RWOPS_MEMORY_RO = 5
-};
-""")
-
-# shape
-ffi.cdef("""
-enum {
-SDL_NONSHAPEABLE_WINDOW = -1,
-SDL_INVALID_SHAPE_ARGUMENT = -2,
-SDL_WINDOW_LACKS_SHAPE = -3
-};
-""")
-
-# surface
-ffi.cdef("""
-enum {
-SDL_SWSURFACE       = 0,
-SDL_PREALLOC        = 0x00000001,
-SDL_RLEACCEL        = 0x00000002,
-SDL_DONTFREE        = 0x00000004
-};
-""")
-
-# video
-ffi.cdef("""
-enum {
-SDL_WINDOWPOS_CENTERED_MASK  = 0x2FFF0000,
-SDL_WINDOWPOS_CENTERED = 0x2FFF0000
-};
-""")

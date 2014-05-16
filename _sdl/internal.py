@@ -1527,3 +1527,5 @@ register('DONTFREE', 'SDL_DONTFREE')
 register('WINDOWPOS_CENTERED_MASK', 'SDL_WINDOWPOS_CENTERED_MASK')
 register('WINDOWPOS_CENTERED', 'SDL_WINDOWPOS_CENTERED')
 
+from .pixelformats import * # overwrite some missing def's from register() calls
+from .constants import * # including things that would otherwise involve math in an enum declaration

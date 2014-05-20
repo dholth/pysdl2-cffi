@@ -1,4 +1,4 @@
-# This file is mostly from pysdl-cffi.
+# This file is mostly from pysdl-cffi, not pysdl2-cffi
 
 from __future__ import (print_function, division, absolute_import)
 
@@ -11,15 +11,6 @@ def SDL_Init(*args):
     result = _LIB.SDL_Init(*args)
     _LIB.SDL_ClearError()
     return result
-
-def SDL_GetError():
-    return _ffi.string(_LIB.SDL_GetError())
-
-def SDL_PollEvent():
-    event = _ffi.new('SDL_Event *')
-    if not _LIB.SDL_PollEvent(event):
-        return None
-    return event
 
 def SDL_GetWindowSize(window):
     w = _ffi.new('int *')
@@ -77,3 +68,17 @@ def SDL_JoystickName(joystick):
     if name == _ffi.NULL:
         return None
     return _ffi.string(name)
+
+# begin pysdl2-cffi handwritten helpers:
+
+def SDL_CalculateGammaRamp(a0, a1=_ffi.NULL):
+    """void SDL_CalculateGammaRamp(float, uint16_t *)
+
+    :param gamma: a gamma value where 0.0 is black and 1.0 is identity
+    :param ramp: an array of 256 values filled in with the gamma ramp
+    :return: ramp
+    """
+    if a1 == _ffi.NULL:
+        a1 = _ffi.new("uint16_t[]", 256)
+    _LIB.SDL_CalculateGammaRamp(a0, a1)
+    return a1

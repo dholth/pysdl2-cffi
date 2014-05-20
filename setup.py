@@ -3,7 +3,7 @@
 from setuptools import setup
 
 setup(name="pysdl2-cffi",
-    version = "0.0.2",
+    version = "0.1.0",
     packages = [ 'sdl', '_sdl', '_sdl_image' ],
     install_requires = [ 'cffi', 'apipkg' ],
     summary = "SDL2 wrapper with cffi",

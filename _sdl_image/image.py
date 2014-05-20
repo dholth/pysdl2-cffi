@@ -1,5 +1,6 @@
 # SDL2's SDL_image bindings for pysdl2-cffi.
 
+import sys
 import cffi
 import os.path
 
@@ -81,7 +82,10 @@ extern int IMG_SavePNG(SDL_Surface *surface, const char *file);
 extern int IMG_SavePNG_RW(SDL_Surface *surface, SDL_RWops *dst, int freedst);
 """)
 
-_LIB = ffi.dlopen('libSDL2_image.so')
+if sys.platform == 'darwin':
+    _LIB = ffi.dlopen('SDL2_image')
+else:
+    _LIB = ffi.dlopen('libSDL2_image.so')
 
 IMG_INIT_JPG = lookup('IMG_INIT_JPG')
 IMG_INIT_PNG = lookup('IMG_INIT_PNG')

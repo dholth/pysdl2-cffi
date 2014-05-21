@@ -13,4 +13,7 @@ def dlopen(ffi, *names):
     # Re-raise the exception.
     return ffi.dlopen(names[0]) # pragma: no cover
 
-_LIB = dlopen(ffi, 'libSDL2.so', 'libSDL2-2.0.so', 'libSDL2-2.0.so.0', 'SDL2')
+_LIB = dlopen(ffi,
+              'libSDL2.so',
+              'libSDL2-2.0.so.0',
+              'SDL2')

@@ -22,6 +22,9 @@ class Struct(object):
         else:
             setattr(self.cdata[0], attr, value)
 
+    def __nonzero__(self):
+        return bool(self.cdata)
+
 def unbox(struct_or_cdata):
     """Return a Struct's underlying storage to pass to low-level ffi calls."""
     if isinstance(struct_or_cdata, Struct):

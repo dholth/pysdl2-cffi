@@ -1,13 +1,16 @@
 # wrap SDL functions for error checking and shorter names.
 from __future__ import (print_function, division, absolute_import)
 
+from . import cdefs
+from .dso import _LIB
+
 class SDL_Error(Exception):
     pass
 
 ignore_errors = False
 
 def check_error():
-    error = ffi.string(_LIB.SDL_GetError())
+    error = cdefs.ffi.string(_LIB.SDL_GetError())
     if error:
         _LIB.SDL_ClearError()
         if ignore_errors:

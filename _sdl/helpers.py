@@ -4,6 +4,7 @@ from __future__ import (print_function, division, absolute_import)
 
 from .cdefs import ffi as _ffi
 from .dso import _LIB # XXX should probably use the error-checking ones
+from .structs import unbox
 
 ################################################################################
 
@@ -63,12 +64,6 @@ def SDL_GetClipboardText():
     #SDL_free(text)
     return result
 
-def SDL_JoystickName(joystick):
-    name = _LIB.SDL_JoystickName(joystick)
-    if name == _ffi.NULL:
-        return None
-    return _ffi.string(name)
-
 # begin pysdl2-cffi handwritten helpers:
 
 def SDL_CalculateGammaRamp(a0, a1=_ffi.NULL):
@@ -82,3 +77,9 @@ def SDL_CalculateGammaRamp(a0, a1=_ffi.NULL):
         a1 = _ffi.new("uint16_t[]", 256)
     _LIB.SDL_CalculateGammaRamp(a0, a1)
     return a1
+
+def SDL_JoystickGetGUIDString(a0):
+    """void SDL_JoystickGetGUIDString(SDL_JoystickGUID, char *, int)"""
+    buf = _ffi.new('char *', 33)
+    _LIB.SDL_JoystickGetGUIDString(unbox(a0), buf, 33)
+    return _ffi.string(buffer)

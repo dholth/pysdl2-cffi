@@ -1,11 +1,11 @@
 # SDL2's SDL_image bindings for pysdl2-cffi.
 
-import sys
 import cffi
-import os.path
 
 import _sdl.cdefs
 from _sdl.internal import guard
+import _sdl.lib
+import _sdl.dso
 
 __missing_functions = []
 
@@ -82,10 +82,10 @@ extern int IMG_SavePNG(SDL_Surface *surface, const char *file);
 extern int IMG_SavePNG_RW(SDL_Surface *surface, SDL_RWops *dst, int freedst);
 """)
 
-if sys.platform == 'darwin':
-    _LIB = ffi.dlopen('SDL2_image')
-else:
-    _LIB = ffi.dlopen('libSDL2_image.so')
+_LIB = _sdl.dso.dlopen(ffi,
+                       'libSDL2_image.so',
+                       'libSDL2_image-2.0.so.0',
+                       'SDL2_image')
 
 IMG_INIT_JPG = lookup('IMG_INIT_JPG')
 IMG_INIT_PNG = lookup('IMG_INIT_PNG')
@@ -139,5 +139,5 @@ IMG_QuitPNG = guard(lookup("IMG_QuitPNG"))
 IMG_QuitTIF = guard(lookup("IMG_QuitTIF"))
 IMG_QuitWEBP = guard(lookup("IMG_QuitWEBP"))
 
-IMG_GetError = _sdl.internal.SDL_GetError
-IMG_SetError = _sdl.internal.SDL_SetError
+IMG_GetError = _sdl.lib.SDL_GetError
+IMG_SetError = _sdl.lib.SDL_SetError

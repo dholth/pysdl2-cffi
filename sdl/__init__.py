@@ -1306,5 +1306,6 @@ exports = ['ADDEVENT',
 ns_dict = dict((s, '_sdl.renamed:%s' % s)
                for s in exports if not s.startswith('_'))
 ns_dict['image'] = '_sdl_image.renamed'
+ns_dict['mixer'] = '_sdl_mixer.renamed'
 
 apipkg.initpkg(__name__, ns_dict)

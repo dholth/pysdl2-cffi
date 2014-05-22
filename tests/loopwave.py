@@ -121,7 +121,7 @@ def main():
 
     # Clean up on signal
     SDL_CloseAudio()
-    SDL_FreeWAV(wave.sound)
+    SDL_FreeWAV(wave.sound_p[0])
     SDL_Quit()
     return 0
 

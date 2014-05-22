@@ -93,7 +93,7 @@ def main():
     while not done:
         # Check for events
         frames += 1
-        while SDL_PollEvent():
+        while SDL_PollEvent(event):
             pass # should check for escape...
             # SDLTest_CommonEvent(state, &event, &done)
 

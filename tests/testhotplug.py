@@ -65,6 +65,7 @@ def main():
                     instance = SDL_JoystickInstanceID(joystick)
                     SDL_Log("Joy Added  : %d : %s\n" % (event.jdevice.which, SDL_JoystickName(joystick)))
                     if enable_haptic:
+                        import pdb; pdb.set_trace()
                         if SDL_JoystickIsHaptic(joystick):
                             haptic = SDL_HapticOpenFromJoystick(joystick)
                             if haptic:

@@ -14,6 +14,6 @@ def dlopen(ffi, *names):
     return ffi.dlopen(names[0]) # pragma: no cover
 
 _LIB = dlopen(ffi,
-              'SDL2_image',
-              'libSDL2_image.so',
-              'libSDL2_image-2.0.so.0')
+              'SDL2_ttf',
+              'libSDL2_ttf.so',
+              'libSDL2_ttf-2.0.so.0')

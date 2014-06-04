@@ -1,5 +1,6 @@
 #!/bin/sh
 # Generate automatic wrapper helpers.
-python -m _sdl.builder
-python -m _sdl_image.builder
-python -m _sdl_mixer.builder
+python -m builder.build_sdl
+python -m builder.build_ttf
+python -m builder.build_mixer
+python -m builder.build_image

@@ -2,6 +2,7 @@
 from __future__ import absolute_import
 
 from _sdl_mixer import lib
+__all__ = []
 
 def _init():
     here = globals()
@@ -15,5 +16,7 @@ def _init():
         else:
             pretty_name = name[4].lower() + name[5:]
         here[pretty_name] = getattr(lib, name)
+        __all__.append(pretty_name)
+        __all__.sort()
 
 _init()

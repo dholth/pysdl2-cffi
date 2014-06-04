@@ -3,18 +3,23 @@
 
 import os
 import re
-from _sdl import builder
+
+from .builder import Builder
 
 header = """# Automatically generated wrappers.
 # Override by adding wrappers to helpers.py.
 from .dso import ffi, _LIB
-from _sdl.structs import unbox
+from .structs import unbox
 
 """
 
 def go():
     from _sdl_image import cdefs
-    output_filename = os.path.join(os.path.dirname(__file__), "autohelpers.py")
+    builder = Builder()
+    output_filename = os.path.join(os.path.dirname(__file__),
+                                   "..",
+                                   "_sdl_image",
+                                   "autohelpers.py")
     with open(output_filename, "w+") as output:
         output.write(header)
         builder.generate(output,

@@ -2,7 +2,9 @@ import cffi
 
 ffi = cffi.FFI()
 
-ffi.cdef("""
+_cdefs = []
+
+_cdefs.append("""
 typedef struct _FILE FILE;
 
 typedef int32_t va_list; // XXX surely broken, but it makes it parse.
@@ -211,12 +213,12 @@ if False: # Windows
                      pfnSDL_CurrentEndThread pfnEndThread);
     """)
 else:
-    ffi.cdef("""
+    _cdefs.append("""
     SDL_Thread *
     SDL_CreateThread(SDL_ThreadFunction fn, const char *name, void *data);
     """)
 
-ffi.cdef(r"""
+_cdefs.append(r"""
 const char * SDL_GetThreadName(SDL_Thread *thread);
 SDL_threadID SDL_ThreadID(void);
 SDL_threadID SDL_GetThreadID(SDL_Thread * thread);
@@ -2055,9 +2057,12 @@ void SDL_Quit(void);
 
 # main
 
-# Only for Windows:
-ffi.cdef("""
-int SDL_RegisterApp(char *name, Uint32 style,
-                    void *hInst);
-void SDL_UnregisterApp(void);
-   """)
+if False:
+    # Only for Windows:
+    _cdefs.append("""
+    int SDL_RegisterApp(char *name, Uint32 style,
+                        void *hInst);
+    void SDL_UnregisterApp(void);
+       """)
+
+ffi.cdef(''.join(_cdefs))

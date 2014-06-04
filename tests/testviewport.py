@@ -13,6 +13,7 @@
 import os
 
 from _sdl.lib import *
+from sdl_test import SDLTest_CommonEvent
 
 # Call this instead of exit(), so we can clean up SDL: atexit() is evil.
 def quit(rc):
@@ -94,8 +95,9 @@ def main():
         # Check for events
         frames += 1
         while SDL_PollEvent(event):
-            pass # should check for escape...
-            # SDLTest_CommonEvent(state, &event, &done)
+            done = SDLTest_CommonEvent(event=event).done
+            if done:
+                break
 
         # Move a viewport box in steps around the screen
         viewport.x = j * 100

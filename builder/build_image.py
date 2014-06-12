@@ -10,6 +10,7 @@ header = """# Automatically generated wrappers.
 # Override by adding wrappers to helpers.py.
 from .dso import ffi, _LIB
 from .structs import unbox
+from _sdl.structs import SDLError
 
 """
 

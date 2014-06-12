@@ -18,7 +18,12 @@ def SDL_CalculateGammaRamp(a0, a1=_ffi.NULL):
     return a1
 
 def SDL_JoystickGetGUIDString(a0):
-    """void SDL_JoystickGetGUIDString(SDL_JoystickGUID, char *, int)"""
+    """
+    ``void SDL_JoystickGetGUIDString(SDL_JoystickGUID, char *, int)``
+
+    Return a string representation for this guid. pszGUID must point to at
+    least 33 bytes (32 for the string plus a NULL terminator).
+    """
     buf = _ffi.new('char *', 33)
     _LIB.SDL_JoystickGetGUIDString(unbox(a0), buf, 33)
     return _ffi.string(buffer)

@@ -9,7 +9,7 @@ from .builder import Builder
 header = """# Automatically generated wrappers.
 # Override by adding wrappers to helpers.py.
 from .dso import ffi, _LIB
-from .structs import Struct, unbox
+from .structs import Struct, unbox, SDLError
 
 """
 
@@ -24,7 +24,7 @@ ns_dict['image'] = '_sdl_image.renamed'
 ns_dict['mixer'] = '_sdl_mixer.renamed'
 ns_dict['ttf'] = '_sdl_ttf.renamed'
 
-apipkg.initpkg(__name__, ns_dict)
+apipkg.initpkg(__name__, ns_dict, {'__all__':exports})
 """]
 
 

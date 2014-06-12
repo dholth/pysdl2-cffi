@@ -5,6 +5,8 @@ import cffi.model
 import collections
 import pycparser.c_ast
 
+from . import errorprone
+
 def is_primitive(arg):
     """Return True if arg is primitive"""
     primitive = False
@@ -137,7 +139,9 @@ class Builder(object):
         fname = declaration_name.split(' ')[1]
 
         if declaration.args:
-            self.declarations_by_type[declaration.args[0].get_c_name()].append(fname)
+            # take 'const' out of c name for this purpose.
+            first_arg_name = declaration.args[0].get_c_name().replace('const ', '')
+            self.declarations_by_type[first_arg_name].append(fname)
 
         outargs = get_outargs(declaration)
 
@@ -163,9 +167,8 @@ class Builder(object):
         output.indent()
         docstring = declaration.get_c_name().replace("(*)", " " + fname)
         output.writeln('"""')
-        output.writeln("`" + docstring + "`")
+        output.writeln("``" + docstring + "``")
         if fname in self.all_funcdocs:
-            output.writeln("")
             for doc_line in self.all_funcdocs[fname].splitlines():
                 output.writeln(doc_line.rstrip())
         output.writeln('"""')
@@ -184,6 +187,11 @@ class Builder(object):
             line.append("rc =")
         line.append("_LIB.%s(%s)" % (fname, ', '.join("%s_c" % arg for arg in arg_names)))
         output.writeln(" ".join(line))
+
+        # handle errors
+        error_handler = errorprone.handler_for_function(fname)
+        if error_handler:
+            output.writeln(error_handler)
 
         returning = []
         if returns_void:

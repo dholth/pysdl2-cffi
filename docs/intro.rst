@@ -67,7 +67,16 @@ The Binding Rules
   Users should release textures, windows, and so on using the appropriate SDL
   functions or risk leaking resources.
 
-- The binding does not convert SDL error codes to exceptions.
+Error Handling
+--------------
+
+Most functions in the sdl, sdl.image, and sdl.ttf libraries check their return
+value for errors. If there was an error then an exception sdl.SDLError() is
+thrown. The exception's .message property holds SDL's own error message as
+reported by sdl.getError()::
+
+    >>> sdl.image.load('/tmp/i_dont_exist.png')
+    SDLError: Couldn't open /tmp/i_dont_exist.png
 
 Bugs
 ----

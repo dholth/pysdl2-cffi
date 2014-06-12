@@ -6,7 +6,7 @@ import os, codecs
 README = codecs.open('README.rst', encoding='utf-8').read()
 
 setup(name="pysdl2-cffi",
-    version = "0.2.0",
+    version = "0.3.0",
     packages = [ 'sdl', '_sdl', '_sdl_image', '_sdl_mixer', '_sdl_ttf' ],
     install_requires = [ 'cffi', 'apipkg' ],
     description = "SDL2 wrapper with cffi",

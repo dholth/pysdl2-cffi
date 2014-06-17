@@ -1,20 +1,20 @@
 # "pretty" names without the NAMESPACE_ prefixes...
 from __future__ import absolute_import
 
+import _sdl.renamer
 from _sdl_mixer import lib
 __all__ = []
 
 def _init():
     here = globals()
     import re
-    constant = re.compile("MIX_[A-Z][A-Z]+")
+    constant_re = re.compile("MIX_(?P<pretty_name>[A-Z][A-Z].+)$")
+    renamer = _sdl.renamer.Renamer(lib, 'Mix_', constant_re)
     for name in dir(lib):
-        if constant.match(name):
-            pretty_name = name[4:]
-        elif not name.startswith("Mix_"):
+        value = getattr(lib, name)
+        pretty_name = renamer.rename(name, value)
+        if not pretty_name:
             continue
-        else:
-            pretty_name = name[4].lower() + name[5:]
         here[pretty_name] = getattr(lib, name)
         __all__.append(pretty_name)
         __all__.sort()

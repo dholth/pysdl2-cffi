@@ -9,7 +9,7 @@ class Struct(_sdl.structs.Struct):
     dereferencing.
     """
     def __init__(self, cdata=ffi.NULL, ffi=ffi):
-        _sdl.structs.Struct(cdata, ffi)
+        _sdl.structs.Struct.__init__(self, cdata, ffi)
 
 def unbox(data, c_type=None, ffi=ffi):
     """

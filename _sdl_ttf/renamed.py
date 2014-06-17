@@ -1,6 +1,7 @@
 # "pretty" names without the NAMESPACE_ prefixes...
 from __future__ import absolute_import
 
+import _sdl.renamer
 from _sdl_ttf import lib
 
 __all__ = []
@@ -8,15 +9,14 @@ __all__ = []
 def _init():
     here = globals()
     import re
-    constant = re.compile("TTF_[A-Z][A-Z]+")
+    constant_re = re.compile("TTF_(?P<pretty_name>[A-Z][A-Z].+)$")
+    renamer = _sdl.renamer.Renamer(lib, "TTF_", constant_re)
     for name in dir(lib):
-        if not name.startswith("TTF_"):
+        value = getattr(lib, name)
+        pretty_name = renamer.rename(name, value)
+        if not pretty_name:
             continue
-        elif constant.match(name):
-            pretty_name = name[4:]
-        else:
-            pretty_name = name[4].lower() + name[5:]
-        here[pretty_name] = getattr(lib, name)
+        here[pretty_name] = value
         __all__.append(pretty_name)
         __all__.sort()
 

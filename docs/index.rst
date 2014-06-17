@@ -6,20 +6,7 @@
 Welcome to pysdl2-cffi's documentation!
 =======================================
 
-pysdl2-cffi is a new wrapper for SDL2 written using cffi, featuring:
-
-- A cffi + dlopen interface to the underlying SDL2 libraries.
-- Automatically generated, consistent helper functions for SDL2, SDL_image,
-  SDL_mixer, and SDL_ttf that hide most allocation and dereferencing.
-- Useful docstrings on every function, including the C function signature and
-  (for SDL2 only) the library's original doxygen documentation reformatted as
-  Sphinx restructured text.
-- A small collection of libSDL2's original example / test programs converted
-  to Python using Eric S. Raymond's ctopy.
-
-This library is developed on Linux and OS X; not yet tested on Windows.
-
-This library is licensed under the GPLv2.
+.. include:: ../README.rst
 
 Contents:
 
@@ -31,6 +18,8 @@ Contents:
    SDL_image
    SDL_mixer
    SDL_ttf
+
+   license
 
 
 Indices and tables

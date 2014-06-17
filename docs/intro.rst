@@ -1,11 +1,11 @@
 pysdl2-cffi
 ===========
 
-The pysdl2-cffi package is a wrapper for libSDL2 and its related libraries
-SDL_image, SDL_mixer, and SDL_ttf, built using cffi. This package wraps each
-function in automatically generated helper functions by following some simple
-rules, exposing them under the ``sdl`` namespace without the ``SDL_`` etc.
-prefixes.
+The pysdl2-cffi package is a wrapper for libSDL2 (http://www.libsdl.org/)
+and its related libraries SDL_image, SDL_mixer, and SDL_ttf, built
+using cffi. This package wraps each function in automatically
+generated helper functions by following some simple rules, exposing
+them under the ``sdl`` namespace without the ``SDL_`` etc.  prefixes.
 
 The Binding Rules
 -----------------
@@ -39,7 +39,7 @@ The Binding Rules
 
 - Structs are exposed as classes that can automatically allocate non-opaque
   structures. For example, SDL_Rect can be allocated by pysdl2-cffi,
-  but SDL_Window can only be allocated by calling `sdl.createWindow()`.
+  but SDL_Window can only be allocated by calling ``sdl.createWindow()``.
   Structs are exposed without their prefix in the same way as other
   declarations::
 
@@ -70,13 +70,15 @@ The Binding Rules
 Error Handling
 --------------
 
-Most functions in the sdl, sdl.image, and sdl.ttf libraries check their return
-value for errors. If there was an error then an exception sdl.SDLError() is
-thrown. The exception's .message property holds SDL's own error message as
-reported by sdl.getError()::
+Most functions in the ``sdl``, ``sdl.image``, and ``sdl.ttf`` libraries check their return
+value for errors. If there was an error then an exception ``sdl.SDLError()`` is
+thrown. The exception's ``.message`` property holds SDL's own error message as
+reported by ``sdl.getError()``::
 
     >>> sdl.image.load('/tmp/i_dont_exist.png')
     SDLError: Couldn't open /tmp/i_dont_exist.png
+
+The ``sdl.mixer`` library does not currently convert errors to exceptions.
 
 Bugs
 ----

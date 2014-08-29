@@ -20,7 +20,7 @@
 import os
 import sys
 
-from _sdl.lib import SDL_Init, SDL_Delay, SDL_Quit, SDL_INIT_AUDIO
+from _sdl.lib import SDL_Init, SDL_Delay, SDL_Quit, SDL_INIT_AUDIO, SDL_GetError
 from _sdl_mixer.lib import *
 
 audio_open = 0
@@ -28,6 +28,7 @@ music = ffi.NULL
 next_track = 0
 
 def CleanUp(exitcode):
+    global music, audio_open
     if Mix_PlayingMusic():
         Mix_FadeOutMusic(1500)
         SDL_Delay(1500)
@@ -110,11 +111,13 @@ def main():
 
     i = 1
 
+    filename = sys.argv[i].encode('utf-8')
+
     # Load the requested music file
     if rwops:
-        music = Mix_LoadMUS_RW(SDL_RWFromFile(argv[i], "rb"), SDL_TRUE)
+        music = Mix_LoadMUS_RW(SDL_RWFromFile(filename, "rb"), SDL_TRUE)
     else:
-        music = Mix_LoadMUS(sys.argv[i])
+        music = Mix_LoadMUS(filename)
     if  music == ffi.NULL :
         sys.stderr.write("Couldn't load %s: %s\n" % (sys.argv[i], SDL_GetError()))
         CleanUp(2)

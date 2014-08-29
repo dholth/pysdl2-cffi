@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 
-import os.path, textwrap, StringIO, json, sys
+import os.path, textwrap, json, sys
+
+try:
+    import StringIO
+except:
+    from io import StringIO
 
 from lxml.etree import XSLT, XML, parse, tostring
 
@@ -20,8 +25,8 @@ def reformat(result):
     funcdocs = {}
     for funcdef in result.xpath(".//function"):
         if not funcdef.text: continue
-        if DEBUG:
-            print funcdef.text
+#         if DEBUG:
+#             print funcdef.text
         sio = StringIO.StringIO()
         last_line = ''
         for line in funcdef.text.splitlines():

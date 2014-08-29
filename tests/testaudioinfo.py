@@ -10,8 +10,12 @@
 # freely.
 #
 
+import util
 import sys
+
 from _sdl.lib import *
+
+formatter = util.Formatter()
 
 def SDL_Log(message):
     sys.stderr.write(message)
@@ -20,7 +24,7 @@ def print_devices(iscapture):
     typestr = "capture" if iscapture else "output"
     n = SDL_GetNumAudioDevices(iscapture)
 
-    SDL_Log("%s devices:\n" % (typestr))
+    print(formatter.format("{!u} devices:", typestr))
 
     if n == -1:
         SDL_Log("  Driver can't detect specific %s devices.\n\n" % (typestr))
@@ -28,7 +32,7 @@ def print_devices(iscapture):
         SDL_Log("  No %s devices found.\n\n" % (typestr))
     else:
         for i in range(n):
-            SDL_Log("  %s\n" % (SDL_GetAudioDeviceName(i, iscapture)))
+            SDL_Log("  %s\n" % (SDL_GetAudioDeviceName(i, iscapture).decode('utf-8')))
         SDL_Log("\n")
 
 def main():
@@ -47,10 +51,10 @@ def main():
     else:
         SDL_Log("Built-in audio drivers:\n")
         for i in range(n):
-            SDL_Log("  %s\n" % (SDL_GetAudioDriver(i)))
+            SDL_Log("  %s\n" % (SDL_GetAudioDriver(i).decode('utf-8')))
         SDL_Log("\n")
 
-    SDL_Log("Using audio driver: %s\n\n" % (SDL_GetCurrentAudioDriver()))
+    SDL_Log("Using audio driver: %s\n\n" % (SDL_GetCurrentAudioDriver().decode('utf-8')))
 
     print_devices(0)
     print_devices(1)

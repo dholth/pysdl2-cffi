@@ -3,9 +3,12 @@
 
 import cffi.model
 import collections
-import pycparser.c_ast
+# Sometimes cffi uses one or the other...
+# import pycparser.c_ast
+import cffi._pycparser.c_ast
+import re
 
-from . import errorprone
+from . import errorprone, nullable
 
 def is_primitive(arg):
     """Return True if arg is primitive"""
@@ -17,8 +20,17 @@ def is_primitive(arg):
 def is_direct(arg):
     """Return True if arg can be handled directly by cffi."""
     return (is_primitive(arg) or
-            (arg.get_c_name() in ('char *', 'char const *')) or
             (hasattr(arg, 'kind') and arg.kind == 'enum'))
+
+def is_utf8(arg):
+    """
+    Return True if arg should be utf8.
+
+    TODO figure out which char* are not utf8.
+    """
+    if (arg.get_c_name() in ('char *', 'char const *')):
+        return True
+    return False
 
 def is_primitive_or_primitive_p(arg):
     """Return True if arg is primitive or primitive*"""
@@ -54,9 +66,9 @@ def iter_declarations(ffi):
     # Sometimes the source is a square bracket... related to ffi.include?
     for source in ffi._cdefsources:
         if source in '[]': continue
-        ast, macros, source = ffi._parser._parse(source)
-        for name, node in ast.children():
-            if not isinstance(node, pycparser.c_ast.Decl):
+        ast = ffi._parser._parse(source)[0]
+        for _, node in ast.children():
+            if not isinstance(node, cffi._pycparser.c_ast.Decl):
                 continue
             yield node
 
@@ -87,7 +99,7 @@ def funcnames_argnames(declarations):
     parameter or an unnamed parameter.
     """
     for declaration in declarations:
-        if not isinstance(declaration.type, pycparser.c_ast.FuncDecl):
+        if not isinstance(declaration.type, cffi._pycparser.c_ast.FuncDecl):
             continue
         funcname = declaration.name
         funcargs = list(p.name for p in declaration.type.args.params)
@@ -178,8 +190,13 @@ class Builder(object):
             c_name = c_arg.get_c_name()
             if is_direct(c_arg):  # directly handled by cffi
                 output.writeln("%s_c = %s" % (arg, arg))
+            elif is_utf8(c_arg):
+                output.writeln('%(arg)s_c = u8(%(arg)s)' % dict(arg=arg))
             else:
-                output.writeln('%s_c = unbox(%s, %r)' % (arg, arg, c_name))
+                null_ok = nullable.nullable.get(fname, ())
+                output.writeln('%(arg)s_c = unbox(%(arg)s, %(c_name)r%(null_ok)s)' %
+                               (dict(arg=arg, c_name=c_name,
+                                     null_ok=(', nullable=True' if null_ok else ''))))
 
         line = []
         returns_void = isinstance(declaration.result, cffi.model.VoidType)
@@ -194,12 +211,20 @@ class Builder(object):
             output.writeln(error_handler)
 
         returning = []
+        result_name = declaration.result.get_c_name()
         if returns_void:
             pass
-        elif declaration.result.get_c_name() in STRING_TYPES:
-            returning.append("ffi.string(rc)")
+        elif result_name in STRING_TYPES:
+            returning.append("ffi.string(rc).decode('utf-8')")
+        elif result_name in ("void *", "SDL_bool", "struct _SDL_iconv_t *"): # or is enum?
+            returning.append("rc")
+        elif not is_primitive_or_primitive_p(declaration.result):
+            match = re.match('(\w+_\w+)( const)?( *)', result_name)
+            assert match
+            if match:
+                returning.append("%s(rc)" % match.group(1))
         else:
-            returning.append("rc") # TODO: box
+            returning.append("rc")
 
         for i, arg in enumerate(arg_names):
             # Assume all out-parameters are like int*, a single element.
@@ -223,10 +248,11 @@ class Builder(object):
         Automatically generate libSDL2 wrappers by following some simple rules.
         Only used during build time.
         """
-        sort_order = {'anonymous' : 4,
-                      'function' : 1,
-                      'struct' : 2,
-                      'union' : 3 }
+        sort_order = {'anonymous' : 3,
+                      'function' : 0,
+                      'struct' : 1,
+                      'union' : 2,
+                      'typedef' : 4 }
 
         argument_names = dict(funcnames_argnames(iter_declarations(cdefs.ffi)))
 

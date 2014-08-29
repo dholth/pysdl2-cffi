@@ -1,5 +1,8 @@
 import cffi
-import cPickle as pickle
+try:
+    import cPickle as pickle
+except ImportError:
+    import pickle
 from os.path import join, dirname, exists
 
 ffi = cffi.FFI()
@@ -2072,11 +2075,15 @@ def _parse():
     ffi.cdef(''.join(_cdefs))
     return ffi
 
-cachefile = join(dirname(__file__), 'cdefs.pickle')
-try:
-    with open(cachefile, 'rb') as pickled:
-        ffi._parser, ffi._cdefsources = pickle.load(pickled)
-except:
+nocache = True
+if nocache:
     ffi = _parse()
-    with open(cachefile, 'wb+') as pickled:
-        pickle.dump((ffi._parser, ffi._cdefsources), pickled)
+else:
+    cachefile = join(dirname(__file__), 'cdefs.pickle')
+    try:
+        with open(cachefile, 'rb') as pickled:
+            ffi._parser, ffi._cdefsources = pickle.load(pickled)
+    except:
+        ffi = _parse()
+        with open(cachefile, 'wb+') as pickled:
+            pickle.dump((ffi._parser, ffi._cdefsources), pickled)

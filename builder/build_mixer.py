@@ -9,6 +9,8 @@ header = """# Automatically generated wrappers.
 # Override by adding wrappers to helpers.py.
 from .dso import ffi, _LIB
 from .structs import unbox, Struct
+from _sdl.structs import u8
+from _sdl.autohelpers import SDL_version
 
 """
 

@@ -34,8 +34,8 @@ def DrawChessBoard(renderer):
 
             SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xFF)
 
-            rect.w = darea.w/8
-            rect.h = darea.h/8
+            rect.w = darea.w//8
+            rect.h = darea.h//8
             rect.x = x * rect.w
             rect.y = row * rect.h
             x = x + 2

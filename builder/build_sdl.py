@@ -9,7 +9,7 @@ from .builder import Builder
 header = """# Automatically generated wrappers.
 # Override by adding wrappers to helpers.py.
 from .dso import ffi, _LIB
-from .structs import Struct, unbox, SDLError
+from .structs import Struct, unbox, SDLError, u8
 
 """
 

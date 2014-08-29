@@ -10,7 +10,8 @@ header = """# Automatically generated wrappers.
 # Override by adding wrappers to helpers.py.
 from .dso import ffi, _LIB
 from .structs import unbox
-from _sdl.structs import SDLError
+from _sdl.structs import SDLError, u8
+from _sdl.autohelpers import SDL_Surface, SDL_Texture, SDL_version
 
 """
 

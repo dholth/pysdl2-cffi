@@ -3,7 +3,7 @@ try:
     import cPickle as pickle
 except ImportError:
     import pickle
-from os.path import join, dirname, exists
+from os.path import join, dirname
 
 ffi = cffi.FFI()
 
@@ -2075,15 +2075,34 @@ def _parse():
     ffi.cdef(''.join(_cdefs))
     return ffi
 
+
+# remove/restore unpickleable WeakKeyDictionary()
+def _parser_save(parser):
+    parser._structnode2type = {}
+    return parser
+
+def _parser_restore(parser):
+    if not hasattr(parser, '_structnode2type'):
+        import weakref
+        parser._structnode2type = weakref.WeakKeyDictionary()
+
+
 nocache = False
 if nocache:
     ffi = _parse()
 else:
-    cachefile = join(dirname(__file__), 'cdefs.pickle')
+    import os, sys
+    cachedir = join(dirname(__file__), '__pycache__')
+    if not os.path.exists(cachedir):
+        os.mkdir(cachedir)
+    cachefile = join(cachedir, 'cdefs_py%d%d.pickle' % sys.version_info[:2])
     try:
         with open(cachefile, 'rb') as pickled:
             ffi._parser, ffi._cdefsources = pickle.load(pickled)
+            _parser_restore(ffi._parser)
     except:
         ffi = _parse()
         with open(cachefile, 'wb+') as pickled:
+            _parser_save(ffi._parser)
             pickle.dump((ffi._parser, ffi._cdefsources), pickled)
+            _parser_restore(ffi._parser)

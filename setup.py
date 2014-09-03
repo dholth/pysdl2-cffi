@@ -6,7 +6,7 @@ import os, codecs
 README = codecs.open('README.rst', encoding='utf-8').read()
 
 setup(name="pysdl2-cffi",
-    version = "0.3.1",
+    version = "0.4.0",
     packages = [ 'sdl', '_sdl', '_sdl_image', '_sdl_mixer', '_sdl_ttf' ],
     install_requires = [ 'cffi', 'apipkg' ],
     extras_require = {'build':['pycparser']},
@@ -15,6 +15,8 @@ setup(name="pysdl2-cffi",
     license = "GPLv2+",
     classifiers = [
         "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.2",
         "License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)"
 	],
     keywords = ['sdl', 'cffi'],

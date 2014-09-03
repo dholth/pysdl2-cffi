@@ -2075,7 +2075,7 @@ def _parse():
     ffi.cdef(''.join(_cdefs))
     return ffi
 
-nocache = True
+nocache = False
 if nocache:
     ffi = _parse()
 else:

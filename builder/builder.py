@@ -3,10 +3,12 @@
 
 import cffi.model
 import collections
-# Sometimes cffi uses one or the other...
-# import pycparser.c_ast
-import cffi._pycparser.c_ast
 import re
+
+# get the pycparser that cffi is using
+import cffi.cparser
+Decl = cffi.cparser.pycparser.c_ast.Decl
+FuncDecl = cffi.cparser.pycparser.c_ast.FuncDecl
 
 from . import errorprone, nullable
 
@@ -68,7 +70,7 @@ def iter_declarations(ffi):
         if source in '[]': continue
         ast = ffi._parser._parse(source)[0]
         for _, node in ast.children():
-            if not isinstance(node, cffi._pycparser.c_ast.Decl):
+            if not isinstance(node, Decl):
                 continue
             yield node
 
@@ -99,7 +101,7 @@ def funcnames_argnames(declarations):
     parameter or an unnamed parameter.
     """
     for declaration in declarations:
-        if not isinstance(declaration.type, cffi._pycparser.c_ast.FuncDecl):
+        if not isinstance(declaration.type, FuncDecl):
             continue
         funcname = declaration.name
         funcargs = list(p.name for p in declaration.type.args.params)

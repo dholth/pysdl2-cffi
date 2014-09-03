@@ -83,16 +83,5 @@ The ``sdl.mixer`` library does not currently convert errors to exceptions.
 Bugs
 ----
 
-- Functions that return structs do not yet wrap their result in a wrapper
-  class. Just pass the unwrapped value as an initializer to the wrapper class
-  if desired::
-
-    w = sdl.createWindow("Window Title",
-        sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED,
-        640, 480, 0)
-
-    assert not isinstance(w, sdl.Window)
-    wrapped_w = sdl.Window(w)
-
 - Some functions that are probably useless in Python, like string manipulation
   or logging functions, are wrapped anyway. They may be removed later.

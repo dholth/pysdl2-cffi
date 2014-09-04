@@ -47,13 +47,5 @@ def go():
         output.write(header)
         builder.generate(output, cdefs=cdefs, helpers=helpers)
 
-    import _sdl.renamed
-
-    exports = pprint.pformat(sorted(name for name in dir(_sdl.renamed)
-                                    if not name.startswith('_')))
-    api_filename = os.path.join(os.path.dirname(__file__), "..", "sdl", "__init__.py")
-    with open(api_filename, "w+") as output:
-        output.write(exports.join(api))
-
 if __name__ == "__main__":
     go()

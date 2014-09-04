@@ -3,10 +3,10 @@ from __future__ import absolute_import
 
 import _sdl.renamer
 from _sdl_mixer import lib
+
 __all__ = []
 
-def _init():
-    here = globals()
+def _mapping():
     import re
     constant_re = re.compile("MIX_(?P<pretty_name>[A-Z][A-Z].+)$")
     renamer = _sdl.renamer.Renamer(lib, 'Mix_', constant_re)
@@ -15,8 +15,13 @@ def _init():
         pretty_name = renamer.rename(name, value)
         if not pretty_name:
             continue
+        yield name, pretty_name
+
+def _init():
+    here = globals()
+    for name, pretty_name in _mapping():
         here[pretty_name] = getattr(lib, name)
         __all__.append(pretty_name)
-        __all__.sort()
+    __all__.sort()
 
 _init()

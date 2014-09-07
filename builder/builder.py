@@ -22,7 +22,7 @@ def is_primitive(arg):
 def is_direct(arg):
     """Return True if arg can be handled directly by cffi."""
     return (is_primitive(arg) or
-            (hasattr(arg, 'kind') and arg.kind == 'enum'))
+            (getattr(arg, 'kind', '') == 'enum'))
 
 def is_utf8(arg):
     """
@@ -218,7 +218,8 @@ class Builder(object):
             pass
         elif result_name in STRING_TYPES:
             returning.append("ffi.string(rc).decode('utf-8')")
-        elif result_name in ("void *", "SDL_bool", "struct _SDL_iconv_t *"): # or is enum?
+        elif (result_name in ("void *", "struct _SDL_iconv_t *") or
+              is_direct(declaration.result)):
             returning.append("rc")
         elif not is_primitive_or_primitive_p(declaration.result):
             match = re.match('(\w+_\w+)( const)?( *)', result_name)

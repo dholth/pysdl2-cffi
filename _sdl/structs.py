@@ -57,6 +57,8 @@ class SDLError(Exception):
 if sys.version_info[0] == 2:
     def u8(text):
         """Automatically encode text to UTF-8."""
+        if isinstance(text, unicode):
+            return text.encode('utf-8')
         return text
 else:
     def u8(text):

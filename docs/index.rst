@@ -8,6 +8,11 @@ Welcome to pysdl2-cffi's documentation!
 
 .. include:: ../README.rst
 
+Changelog
+=========
+
+.. include:: ../CHANGES.rst
+
 Contents:
 
 .. toctree::

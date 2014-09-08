@@ -13,20 +13,6 @@ from .structs import Struct, unbox, SDLError, u8
 
 """
 
-api = ["""# API
-import apipkg
-
-exports = """, """
-
-ns_dict = dict((s, '_sdl.renamed:%s' % s)
-               for s in exports if not s.startswith('_'))
-ns_dict['image'] = '_sdl_image.renamed'
-ns_dict['mixer'] = '_sdl_mixer.renamed'
-ns_dict['ttf'] = '_sdl_ttf.renamed'
-
-apipkg.initpkg(__name__, ns_dict, {'__all__':exports})
-"""]
-
 
 def go():
     from _sdl import cdefs, helpers

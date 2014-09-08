@@ -4,14 +4,15 @@ from setuptools import setup
 
 import os, codecs
 README = codecs.open('README.rst', encoding='utf-8').read()
+CHANGES = codecs.open('CHANGES.rst', encoding='utf-8').read()
 
 setup(name="pysdl2-cffi",
-    version = "0.5.0",
+    version = "0.5.1",
     packages = [ 'sdl', '_sdl', '_sdl_image', '_sdl_mixer', '_sdl_ttf' ],
     install_requires = [ 'cffi', 'apipkg' ],
     extras_require = {'build':['pycparser']},
     description = "SDL2 wrapper with cffi",
-    long_description = README,
+    long_description = README + CHANGES,
     license = "GPLv2+",
     classifiers = [
         "Programming Language :: Python :: 2.7",

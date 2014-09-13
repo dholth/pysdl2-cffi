@@ -136,6 +136,15 @@ class Builder(object):
         output.writeln("class %s(Struct):" % c_name)
         output.indent()
         output.writeln('"""Wrap `%s`"""' % c_name)
+
+        # Write struct properties as @property for better documentation
+        for name in declaration.fldnames or []:
+            output.writeln("@property")
+            output.writeln("def %s(self): return self.cdata.%s" % (name, name))
+            output.writeln("@%s.setter" % name)
+            output.writeln("def %s(self, value): self.cdata.%s = value" % (name, name))
+
+        # Add associated functions to struct:
         functions = self.declarations_by_type[c_name + " *"]
         for fname in functions:
             short_name = fname[4].lower() + fname[5:]

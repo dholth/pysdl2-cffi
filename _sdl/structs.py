@@ -17,16 +17,6 @@ class Struct(object):
         else:
             self.cdata = ffi.new("%s *" % (self.__class__.__name__), data)
 
-    def __getattr__(self, attr):
-        # XXX and if the attribute's value is another struct, return its wrapper
-        return getattr(self.cdata, attr)
-
-    def __setattr__(self, attr, value):
-        if attr == 'cdata':
-            super(Struct, self).__setattr__(attr, value)
-        else:
-            setattr(self.cdata, attr, value)
-
     def __nonzero__(self):
         return bool(self.cdata)
 

@@ -2,7 +2,6 @@
 
 import json
 import os.path
-import pprint
 
 from .builder import Builder
 

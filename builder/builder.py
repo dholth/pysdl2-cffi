@@ -147,7 +147,10 @@ class Builder(object):
         # Add associated functions to struct:
         functions = self.declarations_by_type[c_name + " *"]
         for fname in functions:
-            short_name = fname[4].lower() + fname[5:]
+            if fname[5].isupper():
+                short_name = fname[4:]
+            else:
+                short_name = fname[4].lower() + fname[5:]
             output.writeln("%s = %s" % (short_name, fname))
         if not functions:
             output.writeln("pass")

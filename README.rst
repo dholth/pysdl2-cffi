@@ -16,10 +16,11 @@ This wrapper won't contain anything that doesn't directly translate to part of
 the library's API. The goal is to be a dependency for something like pygame,
 not a replacement.
 
-This library is developed on Linux and OS X; not yet tested on Windows.
+This library should be compatible with Linux, OSX and Windows.
 
 This library is licensed under the GPLv2 or (at your option) any later
-version.
+version. Alternatively a commercial license can be purchased from the 
+author for a nominal fee.
 
 Install with pip, or download from https://pypi.python.org/pypi/pysdl2-cffi
 

@@ -20,7 +20,7 @@ setup(name="pysdl2-cffi",
         "Programming Language :: Python :: 3.2",
         "License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)"
 	],
-    keywords = ['sdl', 'cffi'],
+    keywords = ['sdl', 'cffi>=1.0.dev0'],
     author="Daniel Holth",
     author_email="dholth@fastmail.fm",
     url="https://bitbucket.org/dholth/pysdl2-cffi")

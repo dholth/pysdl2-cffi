@@ -2,7 +2,8 @@
 
 import sys
 
-from .dso import ffi, _LIB
+from __sdl import ffi
+from __sdl import lib as _LIB
 
 class Struct(object):
     """

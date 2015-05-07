@@ -16,6 +16,12 @@
 
 from _sdl.lib import *
 
+def SDL_LogSetPriority(*args):
+    pass
+
+def SDL_LogError(*args):
+    pass
+
 def DrawChessBoard(renderer):
     row = 0
     coloum = 0

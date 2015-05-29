@@ -74,3 +74,14 @@ extern  void  TTF_Quit(void);
 extern  int  TTF_WasInit(void);
 extern  int TTF_GetFontKerningSize(TTF_Font *font, int prev_index, int index);
 """)
+
+ffi.set_source("__sdl_ttf", 
+    """
+    #include <SDL2/SDL.h>
+    #include <SDL2/SDL_ttf.h>
+    """,
+    libraries=["SDL2", "SDL2_ttf"])
+
+if __name__ == "__main__":
+    ffi.compile()
+    

@@ -1,9 +1,7 @@
 # SDL2's SDL_image bindings for pysdl2-cffi.
 
 import cffi
-
 import _sdl.cdefs
-import _sdl.lib
 
 ffi = cffi.FFI()
 ffi.include(_sdl.cdefs.ffi)

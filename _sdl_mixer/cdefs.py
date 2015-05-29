@@ -137,4 +137,13 @@ extern Mix_Chunk * Mix_GetChunk(int channel);
 extern void Mix_CloseAudio(void);
 """)
 
+ffi.set_source("__sdl_mixer", 
+    """
+    #include <SDL2/SDL.h>
+    #include <SDL2/SDL_mixer.h>
+    """,
+    libraries=["SDL2", "SDL2_mixer"])
+
+if __name__ == "__main__":
+    ffi.compile()
 

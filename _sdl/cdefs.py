@@ -3,9 +3,9 @@ Call cffi to compile the extension module.
 With cffi 1.0 this is only needed at build time.
 """
 
+import os.path
 import cffi
 ffi = cffi.FFI()
-import os.path
 
 here = os.path.dirname(__file__)
 for filename in ("sdl.h", "defines.h"):

@@ -1,7 +1,7 @@
 # Base class for struct helpers.
 
 import _sdl.structs
-from .dso import ffi
+from __sdl_mixer import ffi
 
 class Struct(_sdl.structs.Struct):
     """

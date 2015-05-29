@@ -7,9 +7,17 @@ from .builder import Builder
 
 header = """# Automatically generated wrappers.
 # Override by adding wrappers to helpers.py.
-from .dso import ffi, _LIB
+from __sdl import ffi, lib
 from .structs import Struct, unbox, SDLError, u8
 
+def _grab_constants(lib):
+    for name in dir(lib):
+        if name.upper() != name: continue
+        value = getattr(lib, name)
+        if isinstance(value, int):
+            yield (name, value)
+            
+globals().update(dict(_grab_constants(lib)))
 """
 
 

@@ -1,4 +1,5 @@
 # dlopen the SDL library.
+# not needed with cffi 1.0 precompiled module strategy
 
 import sys
 

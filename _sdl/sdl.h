@@ -36,6 +36,82 @@ typedef int32_t Sint32;
 typedef uint32_t Uint32;
 typedef int64_t Sint64;
 typedef uint64_t Uint64;
+extern void * SDL_malloc(size_t size);
+extern void * SDL_calloc(size_t nmemb, size_t size);
+extern void * SDL_realloc(void *mem, size_t size);
+extern void SDL_free(void *mem);
+extern char * SDL_getenv(const char *name);
+extern int SDL_setenv(const char *name, const char *value, int overwrite);
+extern void SDL_qsort(void *base, size_t nmemb, size_t size, int (*compare) (const void *, const void *));
+extern int SDL_abs(int x);
+extern int SDL_isdigit(int x);
+extern int SDL_isspace(int x);
+extern int SDL_toupper(int x);
+extern int SDL_tolower(int x);
+extern void * SDL_memset(void *dst, int c, size_t len);
+extern void * SDL_memcpy(void *dst, const void *src, size_t len);
+extern void * SDL_memmove(void *dst, const void *src, size_t len);
+extern int SDL_memcmp(const void *s1, const void *s2, size_t len);
+extern size_t SDL_wcslen(const wchar_t *wstr);
+extern size_t SDL_wcslcpy(wchar_t *dst, const wchar_t *src, size_t maxlen);
+extern size_t SDL_wcslcat(wchar_t *dst, const wchar_t *src, size_t maxlen);
+extern size_t SDL_strlen(const char *str);
+extern size_t SDL_strlcpy(char *dst, const char *src, size_t maxlen);
+extern size_t SDL_utf8strlcpy(char *dst, const char *src, size_t dst_bytes);
+extern size_t SDL_strlcat(char *dst, const char *src, size_t maxlen);
+extern char * SDL_strdup(const char *str);
+extern char * SDL_strrev(char *str);
+extern char * SDL_strupr(char *str);
+extern char * SDL_strlwr(char *str);
+extern char * SDL_strchr(const char *str, int c);
+extern char * SDL_strrchr(const char *str, int c);
+extern char * SDL_strstr(const char *haystack, const char *needle);
+extern char * SDL_itoa(int value, char *str, int radix);
+extern char * SDL_uitoa(unsigned int value, char *str, int radix);
+extern char * SDL_ltoa(long value, char *str, int radix);
+extern char * SDL_ultoa(unsigned long value, char *str, int radix);
+extern char * SDL_lltoa(Sint64 value, char *str, int radix);
+extern char * SDL_ulltoa(Uint64 value, char *str, int radix);
+extern int SDL_atoi(const char *str);
+extern double SDL_atof(const char *str);
+extern long SDL_strtol(const char *str, char **endp, int base);
+extern unsigned long SDL_strtoul(const char *str, char **endp, int base);
+extern Sint64 SDL_strtoll(const char *str, char **endp, int base);
+extern Uint64 SDL_strtoull(const char *str, char **endp, int base);
+extern double SDL_strtod(const char *str, char **endp);
+extern int SDL_strcmp(const char *str1, const char *str2);
+extern int SDL_strncmp(const char *str1, const char *str2, size_t maxlen);
+extern int SDL_strcasecmp(const char *str1, const char *str2);
+extern int SDL_strncasecmp(const char *str1, const char *str2, size_t len);
+extern int SDL_sscanf(const char *text, const char *fmt, ...);
+extern int SDL_snprintf(char *text, size_t maxlen, const char *fmt, ...);
+extern double SDL_acos(double x);
+extern double SDL_asin(double x);
+extern double SDL_atan(double x);
+extern double SDL_atan2(double x, double y);
+extern double SDL_ceil(double x);
+extern double SDL_copysign(double x, double y);
+extern double SDL_cos(double x);
+extern float SDL_cosf(float x);
+extern double SDL_fabs(double x);
+extern double SDL_floor(double x);
+extern double SDL_log(double x);
+extern double SDL_pow(double x, double y);
+extern double SDL_scalbn(double x, int n);
+extern double SDL_sin(double x);
+extern float SDL_sinf(float x);
+extern double SDL_sqrt(double x);
+typedef struct _SDL_iconv_t *SDL_iconv_t;
+extern SDL_iconv_t SDL_iconv_open(const char *tocode,
+                                                   const char *fromcode);
+extern int SDL_iconv_close(SDL_iconv_t cd);
+extern size_t SDL_iconv(SDL_iconv_t cd, const char **inbuf,
+                                         size_t * inbytesleft, char **outbuf,
+                                         size_t * outbytesleft);
+extern char * SDL_iconv_string(const char *tocode,
+                                               const char *fromcode,
+                                               const char *inbuf,
+                                               size_t inbytesleft);
 extern void SDL_SetMainReady(void);
 typedef enum
 {
@@ -224,7 +300,7 @@ typedef struct SDL_AudioCVT
     double len_ratio;
     SDL_AudioFilter filters[10];
     int filter_index;
-} SDL_AudioCVT;
+}  SDL_AudioCVT;
 extern int SDL_GetNumAudioDrivers(void);
 extern const char * SDL_GetAudioDriver(int index);
 extern int SDL_AudioInit(const char *driver_name);
@@ -357,7 +433,42 @@ enum
 };
 enum
 {
-    SDL_PIXELFORMAT_UNKNOWN
+    SDL_PIXELFORMAT_UNKNOWN,
+    SDL_PIXELFORMAT_INDEX1LSB = ...  ,
+    SDL_PIXELFORMAT_INDEX1MSB = ...  ,
+    SDL_PIXELFORMAT_INDEX4LSB = ...  ,
+    SDL_PIXELFORMAT_INDEX4MSB = ...  ,
+    SDL_PIXELFORMAT_INDEX8 = ... ,
+    SDL_PIXELFORMAT_RGB332 = ... ,
+    SDL_PIXELFORMAT_RGB444 = ... ,
+    SDL_PIXELFORMAT_RGB555 = ... ,
+    SDL_PIXELFORMAT_BGR555 = ...  ,
+    SDL_PIXELFORMAT_ARGB4444 = ...  ,
+    SDL_PIXELFORMAT_RGBA4444 = ...  ,
+    SDL_PIXELFORMAT_ABGR4444 = ...  ,
+    SDL_PIXELFORMAT_BGRA4444 = ...  ,
+    SDL_PIXELFORMAT_ARGB1555 = ...  ,
+    SDL_PIXELFORMAT_RGBA5551 = ...  ,
+    SDL_PIXELFORMAT_ABGR1555 = ...  ,
+    SDL_PIXELFORMAT_BGRA5551 = ...  ,
+    SDL_PIXELFORMAT_RGB565 = ...  ,
+    SDL_PIXELFORMAT_BGR565 = ...  ,
+    SDL_PIXELFORMAT_RGB24 = ...  ,
+    SDL_PIXELFORMAT_BGR24 = ...  ,
+    SDL_PIXELFORMAT_RGB888 = ...  ,
+    SDL_PIXELFORMAT_RGBX8888 = ...  ,
+    SDL_PIXELFORMAT_BGR888 = ...  ,
+    SDL_PIXELFORMAT_BGRX8888 = ...  ,
+    SDL_PIXELFORMAT_ARGB8888 = ...  ,
+    SDL_PIXELFORMAT_RGBA8888 = ...  ,
+    SDL_PIXELFORMAT_ABGR8888 = ...  ,
+    SDL_PIXELFORMAT_BGRA8888 = ...  ,
+    SDL_PIXELFORMAT_ARGB2101010 = ...  ,
+    SDL_PIXELFORMAT_YV12 = ... , 
+    SDL_PIXELFORMAT_IYUV = ... ,
+    SDL_PIXELFORMAT_YUY2 = ... ,
+    SDL_PIXELFORMAT_UYVY = ... ,
+    SDL_PIXELFORMAT_YVYU = ... 
 };
 typedef struct SDL_Color
 {
@@ -439,8 +550,6 @@ typedef struct SDL_Rect
     int x, y;
     int w, h;
 } SDL_Rect;
-SDL_bool SDL_RectEmpty(const SDL_Rect *r);
-SDL_bool SDL_RectEquals(const SDL_Rect *a, const SDL_Rect *b);
 extern SDL_bool SDL_HasIntersection(const SDL_Rect * A,
                                                      const SDL_Rect * B);
 extern SDL_bool SDL_IntersectRect(const SDL_Rect * A,
@@ -575,7 +684,7 @@ typedef enum
     SDL_WINDOW_INPUT_GRABBED = 0x00000100,
     SDL_WINDOW_INPUT_FOCUS = 0x00000200,
     SDL_WINDOW_MOUSE_FOCUS = 0x00000400,
-    SDL_WINDOW_FULLSCREEN_DESKTOP = 0x00001001,
+    SDL_WINDOW_FULLSCREEN_DESKTOP = ... ,
     SDL_WINDOW_FOREIGN = 0x00000800,
     SDL_WINDOW_ALLOW_HIGHDPI = 0x00002000
 } SDL_WindowFlags;
@@ -990,6 +1099,245 @@ typedef enum
     SDL_NUM_SCANCODES = 512
 } SDL_Scancode;
 typedef Sint32 SDL_Keycode;
+enum
+{
+    SDLK_UNKNOWN = ...,
+    SDLK_RETURN = ...,
+    SDLK_ESCAPE = ...,
+    SDLK_BACKSPACE = ...,
+    SDLK_TAB = ...,
+    SDLK_SPACE = ...,
+    SDLK_EXCLAIM = ...,
+    SDLK_QUOTEDBL = ...,
+    SDLK_HASH = ...,
+    SDLK_PERCENT = ...,
+    SDLK_DOLLAR = ...,
+    SDLK_AMPERSAND = ...,
+    SDLK_QUOTE = ...,
+    SDLK_LEFTPAREN = ...,
+    SDLK_RIGHTPAREN = ...,
+    SDLK_ASTERISK = ...,
+    SDLK_PLUS = ...,
+    SDLK_COMMA = ...,
+    SDLK_MINUS = ...,
+    SDLK_PERIOD = ...,
+    SDLK_SLASH = ...,
+    SDLK_0 = ...,
+    SDLK_1 = ...,
+    SDLK_2 = ...,
+    SDLK_3 = ...,
+    SDLK_4 = ...,
+    SDLK_5 = ...,
+    SDLK_6 = ...,
+    SDLK_7 = ...,
+    SDLK_8 = ...,
+    SDLK_9 = ...,
+    SDLK_COLON = ...,
+    SDLK_SEMICOLON = ...,
+    SDLK_LESS = ...,
+    SDLK_EQUALS = ...,
+    SDLK_GREATER = ...,
+    SDLK_QUESTION = ...,
+    SDLK_AT = ...,
+    SDLK_LEFTBRACKET = ...,
+    SDLK_BACKSLASH = ...,
+    SDLK_RIGHTBRACKET = ...,
+    SDLK_CARET = ...,
+    SDLK_UNDERSCORE = ...,
+    SDLK_BACKQUOTE = ...,
+    SDLK_a = ...,
+    SDLK_b = ...,
+    SDLK_c = ...,
+    SDLK_d = ...,
+    SDLK_e = ...,
+    SDLK_f = ...,
+    SDLK_g = ...,
+    SDLK_h = ...,
+    SDLK_i = ...,
+    SDLK_j = ...,
+    SDLK_k = ...,
+    SDLK_l = ...,
+    SDLK_m = ...,
+    SDLK_n = ...,
+    SDLK_o = ...,
+    SDLK_p = ...,
+    SDLK_q = ...,
+    SDLK_r = ...,
+    SDLK_s = ...,
+    SDLK_t = ...,
+    SDLK_u = ...,
+    SDLK_v = ...,
+    SDLK_w = ...,
+    SDLK_x = ...,
+    SDLK_y = ...,
+    SDLK_z = ...,
+    SDLK_CAPSLOCK = ...,
+    SDLK_F1 = ...,
+    SDLK_F2 = ...,
+    SDLK_F3 = ...,
+    SDLK_F4 = ...,
+    SDLK_F5 = ...,
+    SDLK_F6 = ...,
+    SDLK_F7 = ...,
+    SDLK_F8 = ...,
+    SDLK_F9 = ...,
+    SDLK_F10 = ...,
+    SDLK_F11 = ...,
+    SDLK_F12 = ...,
+    SDLK_PRINTSCREEN = ...,
+    SDLK_SCROLLLOCK = ...,
+    SDLK_PAUSE = ...,
+    SDLK_INSERT = ...,
+    SDLK_HOME = ...,
+    SDLK_PAGEUP = ...,
+    SDLK_DELETE = ...,
+    SDLK_END = ...,
+    SDLK_PAGEDOWN = ...,
+    SDLK_RIGHT = ...,
+    SDLK_LEFT = ...,
+    SDLK_DOWN = ...,
+    SDLK_UP = ...,
+    SDLK_NUMLOCKCLEAR = ...,
+    SDLK_KP_DIVIDE = ...,
+    SDLK_KP_MULTIPLY = ...,
+    SDLK_KP_MINUS = ...,
+    SDLK_KP_PLUS = ...,
+    SDLK_KP_ENTER = ...,
+    SDLK_KP_1 = ...,
+    SDLK_KP_2 = ...,
+    SDLK_KP_3 = ...,
+    SDLK_KP_4 = ...,
+    SDLK_KP_5 = ...,
+    SDLK_KP_6 = ...,
+    SDLK_KP_7 = ...,
+    SDLK_KP_8 = ...,
+    SDLK_KP_9 = ...,
+    SDLK_KP_0 = ...,
+    SDLK_KP_PERIOD = ...,
+    SDLK_APPLICATION = ...,
+    SDLK_POWER = ...,
+    SDLK_KP_EQUALS = ...,
+    SDLK_F13 = ...,
+    SDLK_F14 = ...,
+    SDLK_F15 = ...,
+    SDLK_F16 = ...,
+    SDLK_F17 = ...,
+    SDLK_F18 = ...,
+    SDLK_F19 = ...,
+    SDLK_F20 = ...,
+    SDLK_F21 = ...,
+    SDLK_F22 = ...,
+    SDLK_F23 = ...,
+    SDLK_F24 = ...,
+    SDLK_EXECUTE = ...,
+    SDLK_HELP = ...,
+    SDLK_MENU = ...,
+    SDLK_SELECT = ...,
+    SDLK_STOP = ...,
+    SDLK_AGAIN = ...,
+    SDLK_UNDO = ...,
+    SDLK_CUT = ...,
+    SDLK_COPY = ...,
+    SDLK_PASTE = ...,
+    SDLK_FIND = ...,
+    SDLK_MUTE = ...,
+    SDLK_VOLUMEUP = ...,
+    SDLK_VOLUMEDOWN = ...,
+    SDLK_KP_COMMA = ...,
+    SDLK_KP_EQUALSAS400 = ...,
+    SDLK_ALTERASE = ...,
+    SDLK_SYSREQ = ...,
+    SDLK_CANCEL = ...,
+    SDLK_CLEAR = ...,
+    SDLK_PRIOR = ...,
+    SDLK_RETURN2 = ...,
+    SDLK_SEPARATOR = ...,
+    SDLK_OUT = ...,
+    SDLK_OPER = ...,
+    SDLK_CLEARAGAIN = ...,
+    SDLK_CRSEL = ...,
+    SDLK_EXSEL = ...,
+    SDLK_KP_00 = ...,
+    SDLK_KP_000 = ...,
+    SDLK_THOUSANDSSEPARATOR = ...,
+    SDLK_DECIMALSEPARATOR = ...,
+    SDLK_CURRENCYUNIT = ...,
+    SDLK_CURRENCYSUBUNIT = ...,
+    SDLK_KP_LEFTPAREN = ...,
+    SDLK_KP_RIGHTPAREN = ...,
+    SDLK_KP_LEFTBRACE = ...,
+    SDLK_KP_RIGHTBRACE = ...,
+    SDLK_KP_TAB = ...,
+    SDLK_KP_BACKSPACE = ...,
+    SDLK_KP_A = ...,
+    SDLK_KP_B = ...,
+    SDLK_KP_C = ...,
+    SDLK_KP_D = ...,
+    SDLK_KP_E = ...,
+    SDLK_KP_F = ...,
+    SDLK_KP_XOR = ...,
+    SDLK_KP_POWER = ...,
+    SDLK_KP_PERCENT = ...,
+    SDLK_KP_LESS = ...,
+    SDLK_KP_GREATER = ...,
+    SDLK_KP_AMPERSAND = ...,
+    SDLK_KP_DBLAMPERSAND = ...,
+    SDLK_KP_VERTICALBAR = ...,
+    SDLK_KP_DBLVERTICALBAR = ...,
+    SDLK_KP_COLON = ...,
+    SDLK_KP_HASH = ...,
+    SDLK_KP_SPACE = ...,
+    SDLK_KP_AT = ...,
+    SDLK_KP_EXCLAM = ...,
+    SDLK_KP_MEMSTORE = ...,
+    SDLK_KP_MEMRECALL = ...,
+    SDLK_KP_MEMCLEAR = ...,
+    SDLK_KP_MEMADD = ...,
+    SDLK_KP_MEMSUBTRACT = ...,
+    SDLK_KP_MEMMULTIPLY = ...,
+    SDLK_KP_MEMDIVIDE = ...,
+    SDLK_KP_PLUSMINUS = ...,
+    SDLK_KP_CLEAR = ...,
+    SDLK_KP_CLEARENTRY = ...,
+    SDLK_KP_BINARY = ...,
+    SDLK_KP_OCTAL = ...,
+    SDLK_KP_DECIMAL = ...,
+    SDLK_KP_HEXADECIMAL = ...,
+    SDLK_LCTRL = ...,
+    SDLK_LSHIFT = ...,
+    SDLK_LALT = ...,
+    SDLK_LGUI = ...,
+    SDLK_RCTRL = ...,
+    SDLK_RSHIFT = ...,
+    SDLK_RALT = ...,
+    SDLK_RGUI = ...,
+    SDLK_MODE = ...,
+    SDLK_AUDIONEXT = ...,
+    SDLK_AUDIOPREV = ...,
+    SDLK_AUDIOSTOP = ...,
+    SDLK_AUDIOPLAY = ...,
+    SDLK_AUDIOMUTE = ...,
+    SDLK_MEDIASELECT = ...,
+    SDLK_WWW = ...,
+    SDLK_MAIL = ...,
+    SDLK_CALCULATOR = ...,
+    SDLK_COMPUTER = ...,
+    SDLK_AC_SEARCH = ...,
+    SDLK_AC_HOME = ...,
+    SDLK_AC_BACK = ...,
+    SDLK_AC_FORWARD = ...,
+    SDLK_AC_STOP = ...,
+    SDLK_AC_REFRESH = ...,
+    SDLK_AC_BOOKMARKS = ...,
+    SDLK_BRIGHTNESSDOWN = ...,
+    SDLK_BRIGHTNESSUP = ...,
+    SDLK_DISPLAYSWITCH = ...,
+    SDLK_KBDILLUMTOGGLE = ...,
+    SDLK_KBDILLUMDOWN = ...,
+    SDLK_KBDILLUMUP = ...,
+    SDLK_EJECT = ...,
+    SDLK_SLEEP = ...,
+};
 typedef enum
 {
     KMOD_NONE = 0x0000,
@@ -1743,6 +2091,7 @@ extern void SDL_LogCritical(int category, const char *fmt, ...);
 extern void SDL_LogMessage(int category,
                                             SDL_LogPriority priority,
                                             const char *fmt, ...);
+
 typedef void (*SDL_LogOutputFunction)(void *userdata, int category, SDL_LogPriority priority, const char *message);
 extern void SDL_LogGetOutputFunction(SDL_LogOutputFunction *callback, void **userdata);
 extern void SDL_LogSetOutputFunction(SDL_LogOutputFunction callback, void *userdata);

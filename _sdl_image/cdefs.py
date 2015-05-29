@@ -72,5 +72,12 @@ extern int IMG_SavePNG(SDL_Surface *surface, const char *file);
 extern int IMG_SavePNG_RW(SDL_Surface *surface, SDL_RWops *dst, int freedst);
 """)
 
-IMG_GetError = _sdl.lib.SDL_GetError
-IMG_SetError = _sdl.lib.SDL_SetError
+ffi.set_source("__sdl_image", 
+    """
+    #include <SDL2/SDL.h>
+    #include <SDL2/SDL_image.h>
+    """,
+    libraries=["SDL2", "SDL2_image"])
+
+if __name__ == "__main__":
+    ffi.compile()

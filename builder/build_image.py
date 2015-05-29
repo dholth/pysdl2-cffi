@@ -8,10 +8,13 @@ from .builder import Builder
 
 header = """# Automatically generated wrappers.
 # Override by adding wrappers to helpers.py.
-from .dso import ffi, _LIB
+from __sdl_image import ffi, lib
 from .structs import unbox
 from _sdl.structs import SDLError, u8
 from _sdl.autohelpers import SDL_Surface, SDL_Texture, SDL_version
+
+from _sdl.lib import SDL_GetError as IMG_GetError
+from _sdl.lib import SDL_SetError as IMG_SetError
 
 """
 

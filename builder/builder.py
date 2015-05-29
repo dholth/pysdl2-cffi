@@ -128,7 +128,7 @@ class Builder(object):
             # it might be an anonymous struct
             return
         for name in declaration.enumerators:
-            output.writeln("%s = _LIB.%s" % (name, name))
+            output.writeln("%s = lib.%s" % (name, name))
         output.writeln("")
 
     def handle_struct(self, output, declaration_name, declaration):
@@ -216,7 +216,7 @@ class Builder(object):
         returns_void = isinstance(declaration.result, cffi.model.VoidType)
         if not returns_void:
             line.append("rc =")
-        line.append("_LIB.%s(%s)" % (fname, ', '.join("%s_c" % arg for arg in arg_names)))
+        line.append("lib.%s(%s)" % (fname, ', '.join("%s_c" % arg for arg in arg_names)))
         output.writeln(" ".join(line))
 
         # handle errors

@@ -122,7 +122,8 @@ def main():
         drawstate.window = SDL_CreateWindow("Scale %d" % i,
                                             SDL_WINDOWPOS_UNDEFINED,
                                             SDL_WINDOWPOS_UNDEFINED,
-                                            640, 480,
+                                            WINDOW_WIDTH,
+                                            WINDOW_HEIGHT,
                                             SDL_WINDOW_SHOWN)
 
         drawstate.renderer = SDL_CreateRenderer(drawstate.window, -1, 0)

@@ -210,7 +210,7 @@ class Builder(object):
                 null_ok = nullable.nullable.get(fname, ())
                 output.writeln('%(arg)s_c = unbox(%(arg)s, %(c_name)r%(null_ok)s)' %
                                (dict(arg=arg, c_name=c_name,
-                                     null_ok=(', nullable=True' if null_ok else ''))))
+                                     null_ok=(', nullable=True' if arg in null_ok else ''))))
 
         line = []
         returns_void = isinstance(declaration.result, cffi.model.VoidType)

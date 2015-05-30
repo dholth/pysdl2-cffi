@@ -10,5 +10,7 @@ nullable = {
             "SDL_RenderFillRect": ("rect",),
             "SDL_RenderReadPixels": ("rect",),
             "SDL_RenderSetClipRect": ("rect",),
+            "SDL_UpperBlit": ("srcrect", "dstrect"),
+            "SDL_UpperBlitScaled": ("srcrect", "dstrect"),
             # TODO
             }

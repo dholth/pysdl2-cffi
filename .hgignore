@@ -1,8 +1,11 @@
 syntax:glob
 *~
 .*
+*.c
+*.o
 *.orig
 *.pyc
+*.so
 *.*-info
 build
 dist

@@ -7,7 +7,7 @@ README = codecs.open('README.rst', encoding='utf-8').read()
 CHANGES = codecs.open('CHANGES.rst', encoding='utf-8').read()
 
 setup(name="pysdl2-cffi",
-    version = "0.7.0",
+    version = "0.8.0",
     packages = [ 'sdl', '_sdl', '_sdl_image', '_sdl_mixer', '_sdl_ttf' ],
     install_requires = [ 'cffi', 'apipkg' ],
     extras_require = {'build':['pycparser']},
@@ -20,7 +20,7 @@ setup(name="pysdl2-cffi",
         "Programming Language :: Python :: 3.2",
         "License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)"
 	],
-    keywords = ['sdl', 'cffi>=1.0.dev0'],
+    keywords = ['sdl', 'cffi>=1.1'],
     author="Daniel Holth",
     author_email="dholth@fastmail.fm",
     url="https://bitbucket.org/dholth/pysdl2-cffi")

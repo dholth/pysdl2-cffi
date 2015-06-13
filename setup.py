@@ -11,7 +11,7 @@ setup(name="pysdl2-cffi",
     packages=['sdl', '_sdl', '_sdl_image', '_sdl_mixer', '_sdl_ttf'],
     package_data={'_sdl' : ['sdl.h', 'defines.h']},
     setup_requires=["cffi>=1.1.0"],
-    install_requires=['cffi>=1.1.0', 'apipkg'],
+    install_requires=['cffi>=1.1.0'],
     extras_require={
         'build':['pycparser', 'cffi>=1.1.0'],
         'doc':['sphinx'],

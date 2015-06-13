@@ -4,6 +4,19 @@
 from __sdl import ffi, lib
 from .structs import unbox
 
+def _ensure_dll_on_path():
+    """
+    On Windows, if SDL2.dll is on sys.path, add it to os.environ['PATH'].
+    This helps SDL_image etc. which load dll's on demand.
+    """
+    import sys
+    import os.path
+    PATH = os.environ['PATH']
+    for path in sys.path:
+        if os.path.exists(os.path.join(path, 'SDL2.dll')):
+            if not path in PATH:
+                os.environ['PATH'] = path + os.pathsep + PATH
+
 def calculateGammaRamp(a0, a1=ffi.NULL):
     """void SDL_CalculateGammaRamp(float, uint16_t *)
 

@@ -11,6 +11,12 @@ from __sdl import ffi, lib
 from _sdl.structs import Struct, unbox, SDLError, u8
 from _sdl.helpers import *
 
+import _sdl.helpers
+    
+import sys
+if sys.platform == "win32":
+    _sdl.helpers._ensure_dll_on_path()
+
 import _sdl.pixels
 import _sdl.constants
 

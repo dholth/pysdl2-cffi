@@ -20,8 +20,15 @@
 import os
 import sys
 
-from _sdl.lib import SDL_Init, SDL_Delay, SDL_Quit, SDL_INIT_AUDIO, SDL_GetError
-from _sdl_mixer.lib import *
+import __sdl
+import __sdl_mixer
+
+from __sdl import lib, ffi
+from __sdl_mixer import lib as mix
+
+# can't import from __sdl.lib as it is not a module
+for key in "SDL_Init SDL_Delay SDL_Quit SDL_INIT_AUDIO SDL_GetError".split():
+    globals()[key] = getattr(__sdl.lib, key)
 
 audio_open = 0
 music = ffi.NULL
@@ -29,14 +36,14 @@ next_track = 0
 
 def CleanUp(exitcode):
     global music, audio_open
-    if Mix_PlayingMusic():
-        Mix_FadeOutMusic(1500)
+    if mix.Mix_PlayingMusic():
+        mix.Mix_FadeOutMusic(1500)
         SDL_Delay(1500)
     if music:
-        Mix_FreeMusic(music)
+        mix.Mix_FreeMusic(music)
         music = NULL
     if audio_open:
-        Mix_CloseAudio()
+        mix.Mix_CloseAudio()
         audio_open = 0
     SDL_Quit()
     sys.exit(exitcode)
@@ -51,31 +58,31 @@ def Menu():
 #     if (scanf("%s" % (buf)) == 1)
 #         switch buf[0]:
 #         case 'p': case 'P':
-#             Mix_PauseMusic()
+#             mix.Mix_PauseMusic()
 #             break
 #         case 'r': case 'R':
-#             Mix_ResumeMusic()
+#             mix.Mix_ResumeMusic()
 #             break
 #         case 'h': case 'H':
-#             Mix_HaltMusic()
+#             mix.Mix_HaltMusic()
 #             break
 #         case 'v': case 'V':
-#             Mix_VolumeMusic(int(buf+1))
+#             mix.Mix_VolumeMusic(int(buf+1))
 #             break
 #
-#     printf("Music playing: %s Paused: %s\n" % (Mix_PlayingMusic() ? "yes" : "no",
-#            Mix_PausedMusic() ? "yes" : "no")
+#     printf("Music playing: %s Paused: %s\n" % (mix.Mix_PlayingMusic() ? "yes" : "no",
+#            mix.Mix_PausedMusic() ? "yes" : "no")
 
 def main():
     audio_format = None
-    audio_volume = MIX_MAX_VOLUME
+    audio_volume = __sdl_mixer.lib.MIX_MAX_VOLUME
     looping = 0
     interactive = 0
     rwops = 0
 
     # Initialize variables
     audio_rate = 22050*2
-    audio_format = AUDIO_S16
+    audio_format = lib.AUDIO_S16
     audio_channels = 2
     audio_buffers = 4096
 
@@ -85,14 +92,14 @@ def main():
         return 255
 
     # Open the audio device
-    if Mix_OpenAudio(audio_rate, audio_format, audio_channels, audio_buffers) < 0:
+    if mix.Mix_OpenAudio(audio_rate, audio_format, audio_channels, audio_buffers) < 0:
         sys.stderr.write("Couldn't open audio: %s\n" % (SDL_GetError()))
         return(2)
     else:
         audio_rate = ffi.new("int *")
         audio_format = ffi.new("uint16_t *")
         audio_channels = ffi.new("int *")
-        Mix_QuerySpec(audio_rate, audio_format, audio_channels)
+        mix.Mix_QuerySpec(audio_rate, audio_format, audio_channels)
         sys.stdout.write("Opened audio at %d Hz %d bit %s (%s), %d bytes audio buffer\n" % (audio_rate[0],
             (audio_format[0] & 0xFF),
             "surround" if (audio_channels[0] > 2)  else "stereo" if (audio_channels[0] > 1) else "mono",
@@ -101,11 +108,11 @@ def main():
     audio_open = 1
 
     # Set the music volume
-    Mix_VolumeMusic(audio_volume)
+    mix.Mix_VolumeMusic(audio_volume)
 
     # Set the external music player, if any
     if os.getenv("MUSIC_CMD"):
-        Mix_SetMusicCMD(os.getenv("MUSIC_CMD"))
+        mix.Mix_SetMusicCMD(os.getenv("MUSIC_CMD"))
 
     next_track = 0
 
@@ -115,22 +122,22 @@ def main():
 
     # Load the requested music file
     if rwops:
-        music = Mix_LoadMUS_RW(SDL_RWFromFile(filename, "rb"), SDL_TRUE)
+        music = mix.Mix_LoadMUS_RW(SDL_RWFromFile(filename, "rb"), SDL_TRUE)
     else:
-        music = Mix_LoadMUS(filename)
+        music = mix.Mix_LoadMUS(filename)
     if  music == ffi.NULL :
         sys.stderr.write("Couldn't load %s: %s\n" % (sys.argv[i], SDL_GetError()))
         CleanUp(2)
 
     # Play and then exit
     sys.stdout.write("Playing %s\n" % (sys.argv[i]))
-    Mix_FadeInMusic(music, looping, 2000)
-    while not next_track and (Mix_PlayingMusic() or Mix_PausedMusic()):
+    mix.Mix_FadeInMusic(music, looping, 2000)
+    while not next_track and (mix.Mix_PlayingMusic() or mix.Mix_PausedMusic()):
         if interactive:
             Menu()
         else:
             SDL_Delay(100)
-    Mix_FreeMusic(music)
+    mix.Mix_FreeMusic(music)
     music = ffi.NULL
 
     # If the user presses Ctrl-C more than once, exit.

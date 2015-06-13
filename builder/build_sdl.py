@@ -18,15 +18,6 @@ for _lib in _sdl.pixels, _sdl.constants:
     globals().update(dict((key[4:], getattr(_lib, key)) 
         for key in dir(_lib) if key.startswith('SDL_')))
 
-def _grab_constants(lib):
-    for name in dir(lib):
-        if name.upper() != name: continue
-        value = getattr(lib, name)
-        if isinstance(value, int):
-            yield (name, value)
-
-globals().update(dict(_grab_constants(lib)))
-
 """
 
 

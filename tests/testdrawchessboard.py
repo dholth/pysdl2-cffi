@@ -14,7 +14,7 @@
 
 # Sample program:  Draw a Chess Board  by using SDL_CreateSoftwareRenderer API
 
-from _sdl.lib import *
+from __sdl import lib, ffi
 
 def SDL_LogSetPriority(*args):
     pass
@@ -26,11 +26,11 @@ def DrawChessBoard(renderer):
     row = 0
     coloum = 0
     x = 0
-    rect = SDL_Rect()
-    darea = SDL_Rect()
+    rect = ffi.new("SDL_Rect *")
+    darea = ffi.new("SDL_Rect *")
 
     # Get the Size of drawing surface
-    SDL_RenderGetViewport(renderer, darea)
+    lib.SDL_RenderGetViewport(renderer, darea)
 
     for row in range(8):
         coloum = row%2
@@ -38,57 +38,57 @@ def DrawChessBoard(renderer):
 
         for coloum in range(coloum, 4+(row%2)):
 
-            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xFF)
+            lib.SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xFF)
 
             rect.w = darea.w//8
             rect.h = darea.h//8
             rect.x = x * rect.w
             rect.y = row * rect.h
             x = x + 2
-            SDL_RenderFillRect(renderer, rect)
+            lib.SDL_RenderFillRect(renderer, rect)
 
         x = 0
 
 def main():
     # Enable standard application logging
-    SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO)
+    lib.SDL_LogSetPriority(lib.SDL_LOG_CATEGORY_APPLICATION, lib.SDL_LOG_PRIORITY_INFO)
 
     # Initialize SDL
-    if SDL_Init(SDL_INIT_VIDEO) != 0:
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "SDL_Init fail : %s\n" % (SDL_GetError()))
+    if lib.SDL_Init(lib.SDL_INIT_VIDEO) != 0:
+        lib.SDL_LogError(lib.SDL_LOG_CATEGORY_APPLICATION, "lib.SDL_Init fail : %s\n" % (lib.SDL_GetError()))
         return 1
 
 
     # Create window and renderer for given surface
-    window = SDL_CreateWindow("Chess Board", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 640, SDL_WINDOW_SHOWN)
+    window = lib.SDL_CreateWindow("Chess Board", lib.SDL_WINDOWPOS_UNDEFINED, lib.SDL_WINDOWPOS_UNDEFINED, 640, 640, lib.SDL_WINDOW_SHOWN)
     if not window:
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Window creation fail : %s\n" % (SDL_GetError()))
+        lib.SDL_LogError(lib.SDL_LOG_CATEGORY_APPLICATION, "Window creation fail : %s\n" % (lib.SDL_GetError()))
         return 1
-    surface = SDL_GetWindowSurface(window)
-    renderer = SDL_CreateSoftwareRenderer(surface)
+    surface = lib.SDL_GetWindowSurface(window)
+    renderer = lib.SDL_CreateSoftwareRenderer(surface)
     if not renderer:
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Render creation for surface fail : %s\n" % (SDL_GetError()))
+        lib.SDL_LogError(lib.SDL_LOG_CATEGORY_APPLICATION, "Render creation for surface fail : %s\n" % (lib.SDL_GetError()))
         return 1
 
     # Clear the rendering surface with the specified color
-    SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF)
-    SDL_RenderClear(renderer)
+    lib.SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF)
+    lib.SDL_RenderClear(renderer)
 
     # Draw the Image on rendering surface
-    e = SDL_Event()
+    e = ffi.new("SDL_Event *")
     while True:
-        if SDL_PollEvent(e):
-            if e.type == SDL_QUIT:
+        if lib.SDL_PollEvent(e):
+            if e.type == lib.SDL_QUIT:
                 break
 
-            if e.key.keysym.sym == SDLK_ESCAPE:
+            if e.key.keysym.sym == lib.SDLK_ESCAPE:
                 break
 
         DrawChessBoard(renderer)
 
         # Got everything on rendering surface,
         # now Update the drawing image on window screen
-        SDL_UpdateWindowSurface(window)
+        lib.SDL_UpdateWindowSurface(window)
 
 if __name__ == "__main__":
     main()

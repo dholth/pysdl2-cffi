@@ -27,8 +27,6 @@ environment:
 
 init:
   - "ECHO %PYTHON% %PYTHON_VERSION% %PYTHON_ARCH%"
-  - "hg clone https://bitbucket.org/dholth/sdl2_lib win"
-  - "%WITH_COMPILER% %PYTHON%/python -m pip install cffi apipkg"
 
 install:
   - "powershell appveyor\\install.ps1"
@@ -36,6 +34,8 @@ install:
 build: off
 
 test_script:
+  - "hg clone https://bitbucket.org/dholth/sdl2_lib win"
+  - "%WITH_COMPILER% %PYTHON%/python -m pip install cffi apipkg"
   - "%WITH_COMPILER% %PYTHON%/python setup.py bdist_wheel"
 
 artifacts:

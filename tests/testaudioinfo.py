@@ -12,51 +12,51 @@
 
 import sys
 
-from _sdl.lib import *
+from __sdl import lib, ffi
 
 def SDL_Log(message):
     sys.stderr.write(message)
 
 def print_devices(iscapture):
     typestr = "capture" if iscapture else "output"
-    n = SDL_GetNumAudioDevices(iscapture)
+    n = lib.SDL_GetNumAudioDevices(iscapture)
 
     print("%s devices" % typestr)
 
     if n == -1:
-        SDL_Log("  Driver can't detect specific %s devices.\n\n" % (typestr))
+        lib.SDL_Log("  Driver can't detect specific %s devices.\n\n" % (typestr))
     elif n == 0:
-        SDL_Log("  No %s devices found.\n\n" % (typestr))
+        lib.SDL_Log("  No %s devices found.\n\n" % (typestr))
     else:
         for i in range(n):
-            SDL_Log("  %s\n" % (SDL_GetAudioDeviceName(i, iscapture),))
-        SDL_Log("\n")
+            lib.SDL_Log("  %s\n" % ffi.string(lib.SDL_GetAudioDeviceName(i, iscapture),))
+        lib.SDL_Log("\n")
 
 def main():
     # Enable standard application logging
-    SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO)
+    lib.SDL_LogSetPriority(lib.SDL_LOG_CATEGORY_APPLICATION, lib.SDL_LOG_PRIORITY_INFO)
 
     # Load the SDL library
-    if SDL_Init(SDL_INIT_AUDIO) < 0:
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't initialize SDL: %s\n" % (SDL_GetError()))
+    if lib.SDL_Init(lib.SDL_INIT_AUDIO) < 0:
+        lib.SDL_LogError(lib.SDL_LOG_CATEGORY_APPLICATION, "Couldn't initialize SDL: %s\n" % (lib.SDL_GetError()))
         return (1)
 
     # Print available audio drivers
-    n = SDL_GetNumAudioDrivers()
+    n = lib.SDL_GetNumAudioDrivers()
     if n == 0:
-        SDL_Log("No built-in audio drivers\n\n")
+        lib.SDL_Log("No built-in audio drivers\n\n")
     else:
-        SDL_Log("Built-in audio drivers:\n")
+        lib.SDL_Log("Built-in audio drivers:\n")
         for i in range(n):
-            SDL_Log("  %s\n" % (SDL_GetAudioDriver(i)))
-        SDL_Log("\n")
+            lib.SDL_Log("  %s\n" % ffi.string(lib.SDL_GetAudioDriver(i)))
+        lib.SDL_Log("\n")
 
-    SDL_Log("Using audio driver: %s\n\n" % (SDL_GetCurrentAudioDriver()))
+    lib.SDL_Log("Using audio driver: %s\n\n" % ffi.string(lib.SDL_GetCurrentAudioDriver()))
 
     print_devices(0)
     print_devices(1)
 
-    SDL_Quit()
+    lib.SDL_Quit()
     return 0
 
 if __name__ == "__main__":

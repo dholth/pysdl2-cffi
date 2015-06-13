@@ -11647,3 +11647,9 @@ class version(Struct):
     getVersion = getVersion
 
 blitSurface = upperBlit
+
+# Must import after definitions due to circular dependencies
+try:
+    import sdl.image, sdl.ttf, sdl.mixer
+except ImportError:
+    pass

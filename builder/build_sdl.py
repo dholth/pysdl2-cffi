@@ -21,6 +21,12 @@ for _lib in _sdl.pixels, _sdl.constants:
 """
 
 footer = """blitSurface = upperBlit
+
+# Must import after definitions due to circular dependencies
+try:
+    import sdl.image, sdl.ttf, sdl.mixer
+except ImportError:
+    pass
 """
 
 def go():

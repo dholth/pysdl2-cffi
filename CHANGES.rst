@@ -1,9 +1,7 @@
 0.9.0
 -----
 - ``sdl.*`` bindings are generated directly instead of using apipkg. Works
-  better with IDE autocomplete. Now you have to import sdl.image, sdl.mixer,
-  sdl.ttf separately instead of just ``import sdl`` to use image, mixer,
-  ttf libraries.
+  better with IDE autocomplete.
 - _sdl.lib.SDL_* (non-renamed) wrappers have been removed. The raw cffi
   functions are still available in __sdl.lib, __sdl_image.lib etc.
 - SDL math and string functions have been removed. Use the Python equivalents.

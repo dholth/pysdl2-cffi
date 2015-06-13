@@ -9,7 +9,7 @@ class Renamer(object):
         self.constant_re = constant_re
         self.whitelist = whitelist
 
-    def rename(self, name, value):
+    def rename(self, name, value=None):
         """
         Apply our renaming rules, given a name and its value.
 
@@ -23,7 +23,9 @@ class Renamer(object):
             pretty_name = match.group('pretty_name')
         elif not name.startswith(self.prefix):
             if not name in self.whitelist:
-                return None
+                # return None
+                print "Would have discarded %s" % name
+            return name
         elif isinstance(value, type):
             pretty_name = name[4:]
         else:

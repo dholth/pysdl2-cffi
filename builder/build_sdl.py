@@ -8,7 +8,15 @@ from .builder import Builder
 header = """# Automatically generated wrappers.
 # Override by adding wrappers to helpers.py.
 from __sdl import ffi, lib
-from .structs import Struct, unbox, SDLError, u8
+from _sdl.structs import Struct, unbox, SDLError, u8
+from _sdl.helpers import *
+
+import _sdl.pixels
+import _sdl.constants
+
+for _lib in _sdl.pixels, _sdl.constants:
+    globals().update(dict((key[4:], getattr(_lib, key)) 
+        for key in dir(_lib) if key.startswith('SDL_')))
 
 def _grab_constants(lib):
     for name in dir(lib):
@@ -16,12 +24,14 @@ def _grab_constants(lib):
         value = getattr(lib, name)
         if isinstance(value, int):
             yield (name, value)
-            
+
 globals().update(dict(_grab_constants(lib)))
+
 """
 
 
 def go():
+    import _sdl.renamed
     from _sdl import cdefs, helpers
 
     try:
@@ -30,12 +40,15 @@ def go():
     except IOError:
         all_funcdocs = {}
 
-    builder = Builder(all_funcdocs)
+    renamer = _sdl.renamed._get_renamer()
+    builder = Builder(all_funcdocs, renamer)
+    # pure-Python helpers/additional methods:
+    builder.declarations_by_type['SDL_Event *'] = ['unwrapEvent']
 
     output_filename = os.path.join(os.path.dirname(__file__),
                                    "..",
-                                   "_sdl",
-                                   "autohelpers.py")
+                                   "sdl",
+                                   "__init__.py")
     with open(output_filename, "w+") as output:
         output.write(header)
         builder.generate(output, cdefs=cdefs, helpers=helpers)

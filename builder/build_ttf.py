@@ -9,19 +9,19 @@ from .builder import Builder
 header = """# Automatically generated wrappers.
 # Override by adding wrappers to helpers.py.
 from __sdl_ttf import ffi, lib
-from .structs import unbox, Struct
+from _sdl_ttf.structs import unbox, Struct
 from _sdl.structs import u8, SDLError
-from _sdl.autohelpers import SDL_Surface, SDL_version
+# ttf needs the aliases for now...
+from sdl import Surface as SDL_Surface, version as SDL_version
 
 """
 
 def go():
-    from _sdl_ttf import cdefs
-    builder = Builder()
+    from _sdl_ttf import cdefs, renamed
+    builder = Builder(renamer=renamed._get_renamer())
     output_filename = os.path.join(os.path.dirname(__file__),
                                    "..",
-                                   "_sdl_ttf",
-                                   "autohelpers.py")
+                                   "sdl", "ttf.py")
     with open(output_filename, "w+") as output:
         output.write(header)
         builder.generate(output,

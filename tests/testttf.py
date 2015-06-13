@@ -5,7 +5,6 @@
 import sys
 import sdl
 import sdl.ttf
-import sdl.image
 import time
 
 def main():
@@ -16,8 +15,6 @@ def main():
     size = rc[1:]
     print(phrase)
     print(size)
-
-    sdl.image.init(sdl.image.INIT_PNG)
 
     sdl.init(sdl.INIT_VIDEO)
     window = sdl.createWindow(phrase,

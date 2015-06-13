@@ -52,66 +52,9 @@ extern void * SDL_memset(void *dst, int c, size_t len);
 extern void * SDL_memcpy(void *dst, const void *src, size_t len);
 extern void * SDL_memmove(void *dst, const void *src, size_t len);
 extern int SDL_memcmp(const void *s1, const void *s2, size_t len);
-extern size_t SDL_wcslen(const wchar_t *wstr);
-extern size_t SDL_wcslcpy(wchar_t *dst, const wchar_t *src, size_t maxlen);
-extern size_t SDL_wcslcat(wchar_t *dst, const wchar_t *src, size_t maxlen);
-extern size_t SDL_strlen(const char *str);
-extern size_t SDL_strlcpy(char *dst, const char *src, size_t maxlen);
-extern size_t SDL_utf8strlcpy(char *dst, const char *src, size_t dst_bytes);
-extern size_t SDL_strlcat(char *dst, const char *src, size_t maxlen);
-extern char * SDL_strdup(const char *str);
-extern char * SDL_strrev(char *str);
-extern char * SDL_strupr(char *str);
-extern char * SDL_strlwr(char *str);
-extern char * SDL_strchr(const char *str, int c);
-extern char * SDL_strrchr(const char *str, int c);
-extern char * SDL_strstr(const char *haystack, const char *needle);
-extern char * SDL_itoa(int value, char *str, int radix);
-extern char * SDL_uitoa(unsigned int value, char *str, int radix);
-extern char * SDL_ltoa(long value, char *str, int radix);
-extern char * SDL_ultoa(unsigned long value, char *str, int radix);
-extern char * SDL_lltoa(Sint64 value, char *str, int radix);
-extern char * SDL_ulltoa(Uint64 value, char *str, int radix);
-extern int SDL_atoi(const char *str);
-extern double SDL_atof(const char *str);
-extern long SDL_strtol(const char *str, char **endp, int base);
-extern unsigned long SDL_strtoul(const char *str, char **endp, int base);
-extern Sint64 SDL_strtoll(const char *str, char **endp, int base);
-extern Uint64 SDL_strtoull(const char *str, char **endp, int base);
-extern double SDL_strtod(const char *str, char **endp);
-extern int SDL_strcmp(const char *str1, const char *str2);
-extern int SDL_strncmp(const char *str1, const char *str2, size_t maxlen);
-extern int SDL_strcasecmp(const char *str1, const char *str2);
-extern int SDL_strncasecmp(const char *str1, const char *str2, size_t len);
-extern int SDL_sscanf(const char *text, const char *fmt, ...);
-extern int SDL_snprintf(char *text, size_t maxlen, const char *fmt, ...);
-extern double SDL_acos(double x);
-extern double SDL_asin(double x);
-extern double SDL_atan(double x);
-extern double SDL_atan2(double x, double y);
-extern double SDL_ceil(double x);
-extern double SDL_copysign(double x, double y);
-extern double SDL_cos(double x);
-extern float SDL_cosf(float x);
-extern double SDL_fabs(double x);
-extern double SDL_floor(double x);
-extern double SDL_log(double x);
-extern double SDL_pow(double x, double y);
-extern double SDL_scalbn(double x, int n);
-extern double SDL_sin(double x);
-extern float SDL_sinf(float x);
-extern double SDL_sqrt(double x);
-typedef struct _SDL_iconv_t *SDL_iconv_t;
-extern SDL_iconv_t SDL_iconv_open(const char *tocode,
-                                                   const char *fromcode);
-extern int SDL_iconv_close(SDL_iconv_t cd);
-extern size_t SDL_iconv(SDL_iconv_t cd, const char **inbuf,
-                                         size_t * inbytesleft, char **outbuf,
-                                         size_t * outbytesleft);
-extern char * SDL_iconv_string(const char *tocode,
-                                               const char *fromcode,
-                                               const char *inbuf,
-                                               size_t inbytesleft);
+
+// math and string functions not wrapped
+
 extern void SDL_SetMainReady(void);
 typedef enum
 {
@@ -272,6 +215,36 @@ extern size_t SDL_WriteBE64(SDL_RWops * dst, Uint64 value);
 typedef Uint16 SDL_AudioFormat;
 typedef void ( * SDL_AudioCallback) (void *userdata, Uint8 * stream,
                                             int len);
+
+#define SDL_AUDIO_MASK_BITSIZE       ...
+#define SDL_AUDIO_MASK_DATATYPE      ...
+#define SDL_AUDIO_MASK_ENDIAN        ...
+#define SDL_AUDIO_MASK_SIGNED        ...
+
+#define AUDIO_U8        0x0008
+#define AUDIO_S8        0x8008
+#define AUDIO_U16LSB    0x0010
+#define AUDIO_S16LSB    0x8010
+#define AUDIO_U16MSB    0x1010
+#define AUDIO_S16MSB    0x9010
+#define AUDIO_U16       ...
+#define AUDIO_S16       ...
+#define AUDIO_S32LSB    0x8020
+#define AUDIO_S32MSB    0x9020
+#define AUDIO_S32       ...
+#define AUDIO_F32LSB    0x8120
+#define AUDIO_F32MSB    0x9120
+#define AUDIO_F32       ...
+#define AUDIO_U16SYS    ...
+#define AUDIO_S16SYS    ...
+#define AUDIO_S32SYS    ...
+#define AUDIO_F32SYS    ...
+#define SDL_AUDIO_ALLOW_FREQUENCY_CHANGE    0x00000001
+#define SDL_AUDIO_ALLOW_FORMAT_CHANGE       0x00000002
+#define SDL_AUDIO_ALLOW_CHANNELS_CHANGE     0x00000004
+#define SDL_AUDIO_ALLOW_ANY_CHANGE          ... 
+#define SDL_MIX_MAXVOLUME 128
+
 typedef struct SDL_AudioSpec
 {
     int freq;
@@ -300,6 +273,7 @@ typedef struct SDL_AudioCVT
     double len_ratio;
     SDL_AudioFilter filters[10];
     int filter_index;
+    ...;
 }  SDL_AudioCVT;
 extern int SDL_GetNumAudioDrivers(void);
 extern const char * SDL_GetAudioDriver(int index);
@@ -550,6 +524,8 @@ typedef struct SDL_Rect
     int x, y;
     int w, h;
 } SDL_Rect;
+extern SDL_bool SDL_RectEmpty(const SDL_Rect *r);
+extern SDL_bool SDL_RectEquals(const SDL_Rect *a, const SDL_Rect *b);
 extern SDL_bool SDL_HasIntersection(const SDL_Rect * A,
                                                      const SDL_Rect * B);
 extern SDL_bool SDL_IntersectRect(const SDL_Rect * A,

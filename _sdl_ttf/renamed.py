@@ -2,14 +2,18 @@
 from __future__ import absolute_import
 
 import _sdl.renamer
-from _sdl_ttf import lib
 
 __all__ = []
 
-def _mapping():
+def _get_renamer():
     import re
     constant_re = re.compile("TTF_(?P<pretty_name>[A-Z][A-Z].+)$")
-    renamer = _sdl.renamer.Renamer(lib, "TTF_", constant_re)
+    renamer = _sdl.renamer.Renamer(None, "TTF_", constant_re)
+    return renamer
+
+def _mapping():
+    from . import lib
+    renamer = _get_renamer()
     for name in dir(lib):
         value = getattr(lib, name)
         pretty_name = renamer.rename(name, value)
@@ -24,4 +28,4 @@ def _init():
         __all__.append(pretty_name)
     __all__.sort()
 
-_init()
+# _init()

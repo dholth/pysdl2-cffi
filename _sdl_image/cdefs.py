@@ -70,12 +70,13 @@ extern int IMG_SavePNG(SDL_Surface *surface, const char *file);
 extern int IMG_SavePNG_RW(SDL_Surface *surface, SDL_RWops *dst, int freedst);
 """)
 
+from _sdl.cdefs import _headers, _extension_args
 ffi.set_source("__sdl_image", 
     """
-    #include <SDL2/SDL.h>
-    #include <SDL2/SDL_image.h>
-    """,
-    libraries=["SDL2", "SDL2_image"])
+    #include <%(sdl_h)s>
+    #include <%(sdl_image_h)s>
+    """ % _headers,
+    **_extension_args('image'))
 
 if __name__ == "__main__":
     ffi.compile()

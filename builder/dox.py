@@ -58,6 +58,4 @@ for a, b, files in os.walk(base_path):
             all_funcdocs.update(gathered_dox)
 
 with open('dox.json', 'w+') as dox_out:
-    json.dump(all_funcdocs, dox_out, indent=2)
-    # print all_funcdocs['SDL_CreateWindow']
-    # print all_funcdocs['SDL_WarpMouseInWindow']
+    json.dump(all_funcdocs, dox_out, indent=2, sort_keys=True)

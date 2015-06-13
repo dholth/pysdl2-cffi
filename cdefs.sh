@@ -9,4 +9,4 @@
 # TODOS
 # Grab the #define SDL_HINT as Python
 # Also some defines from SDL_keycode.h
-cpp -D _SDL_endian_h -D SDL_FORCE_INLINE= -D DECLSPEC= -D SDLCALL= -DDOXYGEN_SHOULD_IGNORE_THIS= -I /usr/include/SDL2 < /usr/include/SDL2/SDL.h | ./filtercdefs.py > _sdl/sdl.h
+cpp -D _SDL_endian_h -D SDL_FORCE_INLINE= -D DECLSPEC= -D SDLCALL= -DDOXYGEN_SHOULD_IGNORE_THIS= -I /usr/include/SDL2 < /usr/include/SDL2/SDL.h | ./builder/filtercdefs.py > _sdl/sdl.h

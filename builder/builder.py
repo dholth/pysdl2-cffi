@@ -4,6 +4,12 @@
 import cffi.model
 import collections
 import re
+import types
+
+from ast import *
+import astor
+
+from .handle_struct import struct_def, struct_plain_field, struct_boxed_field
 
 # get the pycparser that cffi is using
 import cffi.cparser
@@ -36,7 +42,6 @@ def is_utf8(arg):
 
 def is_primitive_or_primitive_p(arg):
     """Return True if arg is primitive or primitive*"""
-    primitive = False
     if hasattr(arg, 'totype'):
         arg = arg.totype  # a pointer
     primitive = is_primitive(arg)
@@ -45,6 +50,18 @@ def is_primitive_or_primitive_p(arg):
 def is_primitive_p(arg):
     """Return True if arg is primitive*"""
     return is_primitive_or_primitive_p(arg) and hasattr(arg, 'totype')
+
+def is_struct_p(fldtype):
+    return (getattr(fldtype, 'totype', '') 
+            and getattr(fldtype.totype, 'kind', '') == 'struct') \
+                    and not 'struct' in fldtype.totype.get_c_name()
+
+def get_base_name(c_type):
+    c_name = c_type.get_c_name()
+    match = re.match('(\w+_\w+)( const)?( *)', c_name)
+    assert match, c_name
+    if match:
+        return match.group(1)
 
 class IndentedWriter(object):
     def __init__(self, writer):
@@ -116,46 +133,77 @@ class Builder(object):
     """
     Generate wrapper helpers based on some simple rules.
     """
-    def __init__(self, funcdocs={}):
+    def __init__(self, funcdocs={}, renamer=None):
         """
         :param funcdocs: dict of {function name: docstring}.
+        :param renamer: _sdl.renamer.Renamer
         """
         self.all_funcdocs = funcdocs
         self.declarations_by_type = collections.defaultdict(list)
+
+        self.renamer = renamer
 
     def handle_enum(self, output, declaration_name, declaration):
         if not hasattr(declaration, "enumerators"):
             # it might be an anonymous struct
             return
         for name in declaration.enumerators:
-            output.writeln("%s = lib.%s" % (name, name))
+            py_name = self.renamer.rename(name)
+            output.writeln("%s = lib.%s" % (py_name, name))
+        output.writeln("")
+        
+    def handle_macro(self, output, name, declaration):
+        py_name = self.renamer.rename(name)
+        output.writeln("%s = lib.%s" % (py_name, name))
         output.writeln("")
 
-    def handle_struct(self, output, declaration_name, declaration):
+    def handle_struct_ast(self, output, declaration_name, declaration):
         c_name = declaration.get_c_name()
-        output.writeln("class %s(Struct):" % c_name)
-        output.indent()
-        output.writeln('"""Wrap `%s`"""' % c_name)
+        py_name = self.renamer.rename(c_name, types.TypeType)
+        struct = struct_def(py_name, "Wrap `%s`" % c_name, c_name, declaration.fldnames or [])
 
-        # Write struct properties as @property for better documentation
-        for name in declaration.fldnames or []:
-            output.writeln("@property")
-            output.writeln("def %s(self): return self.cdata.%s" % (name, name))
-            output.writeln("@%s.setter" % name)
-            output.writeln("def %s(self, value): self.cdata.%s = value" % (name, name))
+        def handle_fields():
+            for i, (fldname, fldtype) in enumerate(zip(declaration.fldnames, 
+                declaration.fldtypes)):
+
+                if fldtype.has_c_name():
+                    fld_c_name = fldtype.get_c_name()
+                else:
+                    print "XXX", declaration, fldname, fldtype.has_c_name()
+                    fld_c_name = None
+
+                if (is_direct(fldtype) 
+                        or not fld_c_name 
+                        or fld_c_name == 'void *'):
+                    struct.body.extend(struct_plain_field(fldname))
+                elif hasattr(fldtype, 'item'):
+                    print declaration, "Has item", i, fldname, fldtype
+                    struct.body.extend(struct_plain_field(fldname))
+                elif not is_primitive_or_primitive_p(fldtype):
+                    try:
+                        base_name = get_base_name(fldtype)
+                        field_py_name = self.renamer.rename(base_name, types.TypeType)
+                        struct.body.extend(struct_boxed_field(fldname, field_py_name, base_name))
+                    except Exception as e:
+                        # Mostly function pointers
+                        print declaration, "Exception", i, fldname, e
+                        struct.body.extend(struct_plain_field(fldname))
+                        # some of these may by read-only
+                else:
+                    print declaration, "Unhandled", c_name, fldname, fldtype
+                    struct.body.extend(struct_plain_field(fldname))
+
+        # Add @property wrappers for fields
+        if declaration.fldnames:
+            handle_fields()
 
         # Add associated functions to struct:
         functions = self.declarations_by_type[c_name + " *"]
         for fname in functions:
-            if fname[5].isupper():
-                short_name = fname[4:]
-            else:
-                short_name = fname[4].lower() + fname[5:]
-            output.writeln("%s = %s" % (short_name, fname))
-        if not functions:
-            output.writeln("pass")
-        output.dedent()
-        output.writeln("")
+            short_name = self.renamer.rename(fname, None)
+            struct.body.append(Assign(targets=[Name(id=short_name)], value=Name(id=short_name)))
+
+        return astor.to_source(struct)
 
     def handle_function(self,
                         output,
@@ -163,6 +211,7 @@ class Builder(object):
                         declaration,
                         arg_names):
         fname = declaration_name.split(' ')[1]
+        py_name = self.renamer.rename(fname)
 
         if declaration.args:
             # take 'const' out of c name for this purpose.
@@ -189,7 +238,7 @@ class Builder(object):
                     yield arg_name
 
         arg_vars = ', '.join(arg_names_with_defaults())
-        output.writeln("def %s(%s):" % (fname, arg_vars))
+        output.writeln("def %s(%s):" % (py_name, arg_vars))
         output.indent()
         docstring = declaration.get_c_name().replace("(*)", " " + fname)
         output.writeln('"""')
@@ -237,7 +286,8 @@ class Builder(object):
             match = re.match('(\w+_\w+)( const)?( *)', result_name)
             assert match
             if match:
-                returning.append("%s(rc)" % match.group(1))
+                rc_py_name = self.renamer.rename(match.group(1), types.TypeType)
+                returning.append("%s(rc)" % rc_py_name)
         else:
             returning.append("rc")
 
@@ -264,10 +314,13 @@ class Builder(object):
         Only used during build time.
         """
         sort_order = {'anonymous' : 3,
+                      'macro' : 4,
                       'function' : 0,
                       'struct' : 1,
-                      'union' : 2,
-                      'typedef' : 4 }
+                      'union' : 2,                      
+                      'typedef' : 5 }
+
+        # 'macro' for #defines
 
         argument_names = dict(funcnames_argnames(iter_declarations(cdefs.ffi)))
 
@@ -286,21 +339,20 @@ class Builder(object):
             if declaration_kind == "function":
                 self.handle_function(output,
                     declaration_name,
-                    declarations[declaration_name],
+                    declaration,
                     argument_names[declaration_n])
 
             elif (declaration_kind == "typedef" and
                   hasattr(declaration, 'kind') and
                   declaration.kind in ("struct", "union")):
-                self.handle_struct(output,
+                output.writeln(self.handle_struct_ast(output,
                     declaration_name,
-                    declaration)
+                    declaration))
 
             elif declaration_kind in ("anonymous",):
                 self.handle_enum(output,
                             declaration_name,
-                            declarations[declaration_name])
+                            declaration)
 
-            else:
-                # print(declaration_name)
-                pass
+            elif declaration_kind == "macro":
+                self.handle_macro(output, declaration_n, declaration)

@@ -75,12 +75,13 @@ extern  int  TTF_WasInit(void);
 extern  int TTF_GetFontKerningSize(TTF_Font *font, int prev_index, int index);
 """)
 
+from _sdl.cdefs import _headers, _extension_args
 ffi.set_source("__sdl_ttf", 
     """
-    #include <SDL2/SDL.h>
-    #include <SDL2/SDL_ttf.h>
-    """,
-    libraries=["SDL2", "SDL2_ttf"])
+    #include <%(sdl_h)s>
+    #include <%(sdl_ttf_h)s>
+    """ % _headers,
+    **_extension_args('ttf'))
 
 if __name__ == "__main__":
     ffi.compile()

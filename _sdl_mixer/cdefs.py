@@ -7,25 +7,21 @@ import _sdl.cdefs
 ffi = cffi.FFI()
 ffi.include(_sdl.cdefs.ffi)
 
-# TODO use defines
-#define SDL_MIXER_MAJOR_VERSION 2
-#define SDL_MIXER_MINOR_VERSION 0
-#define SDL_MIXER_PATCHLEVEL    0
-#define SDL_MIXER_VERSION(X)                        \
-#define MIX_MAJOR_VERSION   SDL_MIXER_MAJOR_VERSION
-#define MIX_MINOR_VERSION   SDL_MIXER_MINOR_VERSION
-#define MIX_PATCHLEVEL      SDL_MIXER_PATCHLEVEL
-#define MIX_VERSION(X)      SDL_MIXER_VERSION(X)
-
-#define Mix_LoadWAV(file)   Mix_LoadWAV_RW(SDL_RWFromFile(file, "rb"), 1)
-#define MIX_CHANNEL_POST  -2
-#define MIX_EFFECTSMAXSPEED  "MIX_EFFECTSMAXSPEED"
-#define Mix_PlayChannel(channel,chunk,loops) Mix_PlayChannelTimed(channel,chunk,loops,-1)
-#define Mix_FadeInChannel(channel,chunk,loops,ms) Mix_FadeInChannelTimed(channel,chunk,loops,ms,-1)
-#define Mix_SetError    SDL_SetError
-#define Mix_GetError    SDL_GetError
-
 ffi.cdef("""
+#define SDL_MIXER_MAJOR_VERSION ...
+#define SDL_MIXER_MINOR_VERSION ...
+#define SDL_MIXER_PATCHLEVEL    ...
+#define MIX_MAJOR_VERSION       ...
+#define MIX_MINOR_VERSION       ...
+#define MIX_PATCHLEVEL          ...
+#define MIX_CHANNEL_POST        ...
+
+#define MIX_CHANNELS            ...
+#define MIX_DEFAULT_FREQUENCY   ...
+#define MIX_DEFAULT_FORMAT      ...
+#define MIX_DEFAULT_CHANNELS    ...
+#define MIX_MAX_VOLUME          ...
+
 extern int SDL_GetRevisionNumber(void);
 extern const SDL_version * Mix_Linked_Version(void);
 typedef enum
@@ -137,12 +133,13 @@ extern Mix_Chunk * Mix_GetChunk(int channel);
 extern void Mix_CloseAudio(void);
 """)
 
+from _sdl.cdefs import _headers, _extension_args
 ffi.set_source("__sdl_mixer", 
     """
-    #include <SDL2/SDL.h>
-    #include <SDL2/SDL_mixer.h>
-    """,
-    libraries=["SDL2", "SDL2_mixer"])
+    #include <%(sdl_h)s>
+    #include <%(sdl_mixer_h)s>
+    """ % _headers,
+    **_extension_args('mixer'))
 
 if __name__ == "__main__":
     ffi.compile()

@@ -9,6 +9,5 @@ syntax:glob
 *.*-info
 build
 dist
-autohelpers.py
 __pycache__
 docs/_build

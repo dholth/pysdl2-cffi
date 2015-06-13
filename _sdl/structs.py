@@ -3,7 +3,7 @@
 import sys
 
 from __sdl import ffi
-from __sdl import lib as _LIB
+from __sdl import lib
 
 class Struct(object):
     """
@@ -16,10 +16,15 @@ class Struct(object):
         elif isinstance(data, Struct):
             self.cdata = data.cdata
         else:
-            self.cdata = ffi.new("%s *" % (self.__class__.__name__), data)
+            self.cdata = ffi.new("%s *" % (self.__class__.__ctype__), data)
 
     def __nonzero__(self):
         return bool(self.cdata)
+    
+    def __repr__(self):
+        fields = ("=".join((field, str(getattr(self, field))))
+                  for field in self.__class__._fields)
+        return "<%s %s>" % (self.__class__.__name__, " ".join(list(fields)))
 
 def unbox(data, c_type=None, ffi=ffi, nullable=False):
     """
@@ -41,7 +46,7 @@ def unbox(data, c_type=None, ffi=ffi, nullable=False):
 class SDLError(Exception):
     """Fetch and wrap the current SDL error message."""
     def __init__(self):
-        message = ffi.string(_LIB.SDL_GetError()).decode('utf-8')
+        message = ffi.string(lib.SDL_GetError()).decode('utf-8')
         assert message, 'SDL reports no error.' # don't call us when there is no error!
         Exception.__init__(self, message)
 

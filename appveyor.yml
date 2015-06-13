@@ -33,7 +33,9 @@ init:
 install:
   - "powershell appveyor\\install.ps1"
 
-build:
+build: off
+
+test_script:
   - "%WITH_COMPILER% %PYTHON%/python setup.py bdist_wheel"
 
 artifacts:

@@ -20,6 +20,8 @@ for _lib in _sdl.pixels, _sdl.constants:
 
 """
 
+footer = """blitSurface = upperBlit
+"""
 
 def go():
     import _sdl.renamed
@@ -43,6 +45,7 @@ def go():
     with open(output_filename, "w+") as output:
         output.write(header)
         builder.generate(output, cdefs=cdefs, helpers=helpers)
+        output.write(footer)
 
 if __name__ == "__main__":
     go()

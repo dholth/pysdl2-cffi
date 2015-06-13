@@ -11646,3 +11646,4 @@ class version(Struct):
         self.cdata.patch = value
     getVersion = getVersion
 
+blitSurface = upperBlit

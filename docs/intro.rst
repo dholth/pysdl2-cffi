@@ -18,8 +18,8 @@ The Binding Rules
 - Constants (or anything that has two capital letters after the prefix) are
   renamed by removing the prefix only.  ``SDL_INIT_VIDEO`` becomes
   ``sdl.INIT_VIDEO``, ``MIX_INIT_MP3`` becomes ``sdl.mixer.INIT_MP3``.
-- (The original names are available in the ``lib`` submodule of each of the
-  ``_sdl``, ``_sdl_image``, ``_sdl_mixer``, ``_sdl_ttf`` modules)
+- (The raw cffi wrappers are available as ``__sdl``, ``__sdl_image``, 
+  ``__sdl_mixer``, ``__sdl_ttf`` which each contain ``.lib`` and ``.ffi`` objects)
 - Functions with primitive-typed out parameters return a tuple of the return
   value (if any) and the value of each out parameter.
 

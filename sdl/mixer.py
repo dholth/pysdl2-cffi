@@ -5,14 +5,14 @@ from _sdl_mixer.structs import unbox, Struct
 from _sdl.structs import u8
 
 # alias needed here
-from sdl import version as SDL_version
+from sdl import RWFromFile, version as SDL_version
 
 # helpers (from C macros)
 def playChannel(channel, chunk, loops):
     return playChannelTimed(channel, chunk, loops, -1)
 
 def loadWAV(file):
-    return loadWAV_RW(sdl.RWFromFile(file, b"rb"), 1)
+    return loadWAV_RW(RWFromFile(file, "rb"), 1)
 
 def fadeInChannel(channel,chunk,loops,ms):
     return fadeInChannelTimed(channel,chunk,loops,ms,-1)

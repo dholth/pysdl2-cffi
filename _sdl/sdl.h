@@ -73,6 +73,7 @@ typedef struct SDL_assert_data
     int linenum;
     const char *function;
     const struct SDL_assert_data *next;
+    ...;
 } SDL_assert_data;
 extern SDL_assert_state SDL_ReportAssertion(SDL_assert_data *,
                                                              const char *,
@@ -188,6 +189,7 @@ typedef struct SDL_RWops
             void *data2;
         } unknown;
     } hidden;
+    ...;
 } SDL_RWops;
 extern SDL_RWops * SDL_RWFromFile(const char *file,
                                                   const char *mode);
@@ -256,6 +258,7 @@ typedef struct SDL_AudioSpec
     Uint32 size;
     SDL_AudioCallback callback;
     void *userdata;
+    ...;
 } SDL_AudioSpec;
 struct SDL_AudioCVT;
 typedef void ( * SDL_AudioFilter) (struct SDL_AudioCVT * cvt,
@@ -450,6 +453,7 @@ typedef struct SDL_Color
     Uint8 g;
     Uint8 b;
     Uint8 a;
+    ...;
 } SDL_Color;
 typedef struct SDL_Palette
 {
@@ -457,6 +461,7 @@ typedef struct SDL_Palette
     SDL_Color *colors;
     Uint32 version;
     int refcount;
+    ...;
 } SDL_Palette;
 typedef struct SDL_PixelFormat
 {
@@ -479,6 +484,7 @@ typedef struct SDL_PixelFormat
     Uint8 Ashift;
     int refcount;
     struct SDL_PixelFormat *next;
+    ...;
 } SDL_PixelFormat;
 extern const char* SDL_GetPixelFormatName(Uint32 format);
 extern SDL_bool SDL_PixelFormatEnumToMasks(Uint32 format,
@@ -518,11 +524,13 @@ typedef struct SDL_Point
 {
     int x;
     int y;
+    ...;
 } SDL_Point;
 typedef struct SDL_Rect
 {
     int x, y;
     int w, h;
+    ...;
 } SDL_Rect;
 extern SDL_bool SDL_RectEmpty(const SDL_Rect *r);
 extern SDL_bool SDL_RectEquals(const SDL_Rect *a, const SDL_Rect *b);
@@ -562,6 +570,7 @@ typedef struct SDL_Surface
     SDL_Rect clip_rect;
     struct SDL_BlitMap *map;
     int refcount;
+    ...;
 } SDL_Surface;
 typedef int (*SDL_blit) (struct SDL_Surface * src, SDL_Rect * srcrect,
                          struct SDL_Surface * dst, SDL_Rect * dstrect);
@@ -1336,6 +1345,7 @@ typedef struct SDL_Keysym
     SDL_Keycode sym;
     Uint16 mod;
     Uint32 unused;
+    ...;
 } SDL_Keysym;
 extern SDL_Window * SDL_GetKeyboardFocus(void);
 extern const Uint8 * SDL_GetKeyboardState(int *numkeys);
@@ -1394,6 +1404,7 @@ struct _SDL_Joystick;
 typedef struct _SDL_Joystick SDL_Joystick;
 typedef struct {
     Uint8 data[16];
+    ...;
 } SDL_JoystickGUID;
 typedef Sint32 SDL_JoystickID;
 extern int SDL_NumJoysticks(void);
@@ -1442,6 +1453,7 @@ typedef struct SDL_GameControllerButtonBind
             int hat_mask;
         } hat;
     } value;
+    ...;
 } SDL_GameControllerButtonBind;
 extern int SDL_GameControllerAddMappingsFromRW( SDL_RWops * rw, int freerw );
 extern int SDL_GameControllerAddMapping( const char* mappingString );
@@ -1510,6 +1522,7 @@ typedef struct SDL_Finger
     float x;
     float y;
     float pressure;
+    ...;
 } SDL_Finger;
 extern int SDL_GetNumTouchDevices(void);
 extern SDL_TouchID SDL_GetTouchDevice(int index);
@@ -1569,6 +1582,7 @@ typedef struct SDL_CommonEvent
 {
     Uint32 type;
     Uint32 timestamp;
+    ...;
 } SDL_CommonEvent;
 typedef struct SDL_WindowEvent
 {
@@ -1581,6 +1595,7 @@ typedef struct SDL_WindowEvent
     Uint8 padding3;
     Sint32 data1;
     Sint32 data2;
+    ...;
 } SDL_WindowEvent;
 typedef struct SDL_KeyboardEvent
 {
@@ -1592,6 +1607,7 @@ typedef struct SDL_KeyboardEvent
     Uint8 padding2;
     Uint8 padding3;
     SDL_Keysym keysym;
+    ...;
 } SDL_KeyboardEvent;
 typedef struct SDL_TextEditingEvent
 {
@@ -1601,6 +1617,7 @@ typedef struct SDL_TextEditingEvent
     char text[(32)];
     Sint32 start;
     Sint32 length;
+    ...;
 } SDL_TextEditingEvent;
 typedef struct SDL_TextInputEvent
 {
@@ -1608,6 +1625,7 @@ typedef struct SDL_TextInputEvent
     Uint32 timestamp;
     Uint32 windowID;
     char text[(32)];
+    ...;
 } SDL_TextInputEvent;
 typedef struct SDL_MouseMotionEvent
 {
@@ -1620,6 +1638,7 @@ typedef struct SDL_MouseMotionEvent
     Sint32 y;
     Sint32 xrel;
     Sint32 yrel;
+    ...;
 } SDL_MouseMotionEvent;
 typedef struct SDL_MouseButtonEvent
 {
@@ -1633,6 +1652,7 @@ typedef struct SDL_MouseButtonEvent
     Uint8 padding1;
     Sint32 x;
     Sint32 y;
+    ...;
 } SDL_MouseButtonEvent;
 typedef struct SDL_MouseWheelEvent
 {
@@ -1642,6 +1662,7 @@ typedef struct SDL_MouseWheelEvent
     Uint32 which;
     Sint32 x;
     Sint32 y;
+    ...;
 } SDL_MouseWheelEvent;
 typedef struct SDL_JoyAxisEvent
 {
@@ -1654,6 +1675,7 @@ typedef struct SDL_JoyAxisEvent
     Uint8 padding3;
     Sint16 value;
     Uint16 padding4;
+    ...;
 } SDL_JoyAxisEvent;
 typedef struct SDL_JoyBallEvent
 {
@@ -1666,6 +1688,7 @@ typedef struct SDL_JoyBallEvent
     Uint8 padding3;
     Sint16 xrel;
     Sint16 yrel;
+    ...;
 } SDL_JoyBallEvent;
 typedef struct SDL_JoyHatEvent
 {
@@ -1676,6 +1699,7 @@ typedef struct SDL_JoyHatEvent
     Uint8 value;
     Uint8 padding1;
     Uint8 padding2;
+    ...;
 } SDL_JoyHatEvent;
 typedef struct SDL_JoyButtonEvent
 {
@@ -1686,12 +1710,14 @@ typedef struct SDL_JoyButtonEvent
     Uint8 state;
     Uint8 padding1;
     Uint8 padding2;
+    ...;
 } SDL_JoyButtonEvent;
 typedef struct SDL_JoyDeviceEvent
 {
     Uint32 type;
     Uint32 timestamp;
     Sint32 which;
+    ...;
 } SDL_JoyDeviceEvent;
 typedef struct SDL_ControllerAxisEvent
 {
@@ -1704,6 +1730,7 @@ typedef struct SDL_ControllerAxisEvent
     Uint8 padding3;
     Sint16 value;
     Uint16 padding4;
+    ...;
 } SDL_ControllerAxisEvent;
 typedef struct SDL_ControllerButtonEvent
 {
@@ -1714,12 +1741,14 @@ typedef struct SDL_ControllerButtonEvent
     Uint8 state;
     Uint8 padding1;
     Uint8 padding2;
+    ...;
 } SDL_ControllerButtonEvent;
 typedef struct SDL_ControllerDeviceEvent
 {
     Uint32 type;
     Uint32 timestamp;
     Sint32 which;
+    ...;
 } SDL_ControllerDeviceEvent;
 typedef struct SDL_TouchFingerEvent
 {
@@ -1732,6 +1761,7 @@ typedef struct SDL_TouchFingerEvent
     float dx;
     float dy;
     float pressure;
+    ...;
 } SDL_TouchFingerEvent;
 typedef struct SDL_MultiGestureEvent
 {
@@ -1744,6 +1774,7 @@ typedef struct SDL_MultiGestureEvent
     float y;
     Uint16 numFingers;
     Uint16 padding;
+    ...;
 } SDL_MultiGestureEvent;
 typedef struct SDL_DollarGestureEvent
 {
@@ -1755,22 +1786,26 @@ typedef struct SDL_DollarGestureEvent
     float error;
     float x;
     float y;
+    ...;
 } SDL_DollarGestureEvent;
 typedef struct SDL_DropEvent
 {
     Uint32 type;
     Uint32 timestamp;
     char *file;
+    ...;
 } SDL_DropEvent;
 typedef struct SDL_QuitEvent
 {
     Uint32 type;
     Uint32 timestamp;
+    ...;
 } SDL_QuitEvent;
 typedef struct SDL_OSEvent
 {
     Uint32 type;
     Uint32 timestamp;
+    ...;
 } SDL_OSEvent;
 typedef struct SDL_UserEvent
 {
@@ -1780,6 +1815,7 @@ typedef struct SDL_UserEvent
     Sint32 code;
     void *data1;
     void *data2;
+    ...;
 } SDL_UserEvent;
 struct SDL_SysWMmsg;
 typedef struct SDL_SysWMmsg SDL_SysWMmsg;
@@ -1788,6 +1824,7 @@ typedef struct SDL_SysWMEvent
     Uint32 type;
     Uint32 timestamp;
     SDL_SysWMmsg *msg;
+    ...;
 } SDL_SysWMEvent;
 typedef union SDL_Event
 {
@@ -1857,6 +1894,7 @@ typedef struct SDL_HapticDirection
 {
     Uint8 type;
     Sint32 dir[3];
+    ...;
 } SDL_HapticDirection;
 typedef struct SDL_HapticConstant
 {
@@ -1871,6 +1909,7 @@ typedef struct SDL_HapticConstant
     Uint16 attack_level;
     Uint16 fade_length;
     Uint16 fade_level;
+    ...;
 } SDL_HapticConstant;
 typedef struct SDL_HapticPeriodic
 {
@@ -1888,6 +1927,7 @@ typedef struct SDL_HapticPeriodic
     Uint16 attack_level;
     Uint16 fade_length;
     Uint16 fade_level;
+    ...;
 } SDL_HapticPeriodic;
 typedef struct SDL_HapticCondition
 {
@@ -1903,6 +1943,7 @@ typedef struct SDL_HapticCondition
     Sint16 left_coeff[3];
     Uint16 deadband[3];
     Sint16 center[3];
+    ...;
 } SDL_HapticCondition;
 typedef struct SDL_HapticRamp
 {
@@ -1918,6 +1959,7 @@ typedef struct SDL_HapticRamp
     Uint16 attack_level;
     Uint16 fade_length;
     Uint16 fade_level;
+    ...;
 } SDL_HapticRamp;
 typedef struct SDL_HapticLeftRight
 {
@@ -1925,6 +1967,7 @@ typedef struct SDL_HapticLeftRight
     Uint32 length;
     Uint16 large_magnitude;
     Uint16 small_magnitude;
+    ...;
 } SDL_HapticLeftRight;
 typedef struct SDL_HapticCustom
 {
@@ -1942,6 +1985,7 @@ typedef struct SDL_HapticCustom
     Uint16 attack_level;
     Uint16 fade_length;
     Uint16 fade_level;
+    ...;
 } SDL_HapticCustom;
 typedef union SDL_HapticEffect
 {
@@ -2141,6 +2185,7 @@ typedef struct SDL_RendererInfo
     Uint32 texture_formats[16];
     int max_texture_width;
     int max_texture_height;
+    ...;
 } SDL_RendererInfo;
 typedef enum
 {
@@ -2295,6 +2340,7 @@ typedef struct SDL_version
     Uint8 major;
     Uint8 minor;
     Uint8 patch;
+    ...;
 } SDL_version;
 extern void SDL_GetVersion(SDL_version * ver);
 extern const char * SDL_GetRevision(void);

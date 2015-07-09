@@ -9,6 +9,17 @@ import platform
 
 system = platform.system()
 
+# Common header locations under Linux and OSX
+_unix_headers = {
+    'sdl_h':'SDL2/SDL.h',
+    'sdl_image_h':'SDL2/SDL_image.h', 
+    'sdl_mixer_h':'SDL2/SDL_mixer.h',         
+    'sdl_ttf_h':'SDL2/SDL_ttf.h'
+}
+
+# Whether to use an OSX framework as opposed to a regular library
+_use_framework = False
+
 if system == "Windows":
     # Added to the include path below
     _headers = {
@@ -19,22 +30,23 @@ if system == "Windows":
     } 
 
 elif system == "Darwin":
+    # In case the user has a brewed installation of SDL2
+    if os.path.exists("/usr/local/include/SDL2"):
+        _headers = _unix_headers
+        
     # Header paths for framework build
-    _headers = {
-        'sdl_h':'SDL2/SDL.h',
-        'sdl_image_h':'SDL2_image/SDL_image.h', 
-        'sdl_mixer_h':'SDL2_mixer/SDL_mixer.h',         
-        'sdl_ttf_h':'SDL2_ttf/SDL_ttf.h'
-    }
+    else:
+        _use_framework = True
+        _headers = {
+            'sdl_h':'SDL2/SDL.h',
+            'sdl_image_h':'SDL2_image/SDL_image.h', 
+            'sdl_mixer_h':'SDL2_mixer/SDL_mixer.h',         
+            'sdl_ttf_h':'SDL2_ttf/SDL_ttf.h'
+        }
 
 else:
     # Linux with /usr/include/.../SDL2/
-    _headers = {
-        'sdl_h':'SDL2/SDL.h',
-        'sdl_image_h':'SDL2/SDL_image.h', 
-        'sdl_mixer_h':'SDL2/SDL_mixer.h',         
-        'sdl_ttf_h':'SDL2/SDL_ttf.h'
-    }
+    _headers = _unix_headers
 
 def make_absolute(paths):
     return [os.path.abspath(p) for p in paths]
@@ -44,7 +56,7 @@ def _extension_args(libname):
 
     args = {}
 
-    if system == 'Darwin':
+    if system == 'Darwin' and _use_framework:
         # Link with framework SDL2 on Darwin
         compiler_args = {
             "sdl" : {
@@ -73,7 +85,7 @@ def _extension_args(libname):
         }[libname]
         
     else:
-        # Link with plain old -l... on Windows, Linux
+        # Link with plain old -l...
         compiler_args = {
             "sdl"   : {"libraries":["SDL2"]},
             "image" : {"libraries":["SDL2", "SDL2_image"], },

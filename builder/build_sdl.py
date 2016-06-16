@@ -37,7 +37,7 @@ except ImportError:
 
 def go():
     import _sdl.renamed
-    from _sdl import cdefs, helpers
+    from _sdl import cdefs
 
     try:
         with open(os.path.join(os.path.dirname(__file__), 'dox.json'), 'r') as funcdocs:
@@ -54,9 +54,10 @@ def go():
                                    "..",
                                    "sdl",
                                    "__init__.py")
+    
     with open(output_filename, "w+") as output:
         output.write(header)
-        builder.generate(output, cdefs=cdefs, helpers=helpers)
+        builder.generate(output, cdefs=cdefs)
         output.write(footer)
 
 if __name__ == "__main__":

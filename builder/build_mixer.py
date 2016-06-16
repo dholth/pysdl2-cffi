@@ -36,7 +36,6 @@ def go():
         output.write(header)
         builder.generate(output,
                          cdefs=cdefs,
-                         helpers=cdefs,
                          filter=re.compile("^.* (Mix_|MIX_).*$"))
 
 if __name__ == "__main__":

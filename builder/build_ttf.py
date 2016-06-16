@@ -26,7 +26,6 @@ def go():
         output.write(header)
         builder.generate(output,
                          cdefs=cdefs,
-                         helpers=cdefs,
                          filter=re.compile("^.* TTF_.*$"))
 
 if __name__ == "__main__":

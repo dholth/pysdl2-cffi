@@ -307,7 +307,6 @@ class Builder(object):
     def generate(self,
                  output,
                  cdefs=None,
-                 helpers=None,
                  filter=None):
         """
         Automatically generate libSDL2 wrappers by following some simple rules.
@@ -331,7 +330,7 @@ class Builder(object):
         declarations = get_declarations(cdefs.ffi)
         output = IndentedWriter(output)
         for declaration_name in sorted(declarations, key=sort_key):
-            declaration = declarations[declaration_name]
+            declaration = declarations[declaration_name][0]
             if filter and not filter.match(declaration_name):
                 continue
             declaration_kind, declaration_n = declaration_name.split(" ")

@@ -1,0 +1,34 @@
+# Example build requirements folling build-deps-pep
+[build-system]
+requires = ["cffi", "SCons>=2.5.0", "toml"]
+
+[tool.wheel]
+name="pysdl2-cffi"
+version="0.10.0"
+packages=['sdl', '_sdl', '_sdl_image', '_sdl_mixer', '_sdl_ttf']
+setup_requires=["cffi>=1.6.0"]
+install_requires=["cffi>=1.6.0"]
+cffi_modules=[
+  "_sdl/cdefs.py:ffi",
+  "_sdl_image/cdefs.py:ffi",
+  "_sdl_mixer/cdefs.py:ffi",
+  "_sdl_ttf/cdefs.py:ffi",
+]
+description="SDL2 wrapper with cffi"
+# long_description=README + CHANGES
+license="GPLv2+"
+classifiers=[
+  "Programming Language :: Python :: 2.7",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.4",
+  "License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)"
+]
+keywords=["sdl", "cffi"]
+author="Daniel Holth"
+author_email="dholth@fastmail.fm"
+url="https://bitbucket.org/dholth/pysdl2-cffi"
+
+[tool.wheel.extras_require]
+build = ['pycparser', 'astor', 'cffi>=1.6.0']
+doc = ['sphinx']
+":sys_platform=='win32'" = ["sdl2_lib"]

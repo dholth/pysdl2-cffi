@@ -27,7 +27,6 @@ def go():
         output.write(header)
         builder.generate(output,
                          cdefs=cdefs,
-                         helpers=cdefs,
                          filter=re.compile("^.* IMG_.*$"))
 
 if __name__ == "__main__":

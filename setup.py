@@ -2,18 +2,20 @@
 
 from setuptools import setup
 
+from distutils.command import build_ext 
+
 import codecs
 README = codecs.open('README.rst', encoding='utf-8').read()
 CHANGES = codecs.open('CHANGES.rst', encoding='utf-8').read()
 
 setup(name="pysdl2-cffi",
-    version="0.9.0",
+    version="0.10.0",
     packages=['sdl', '_sdl', '_sdl_image', '_sdl_mixer', '_sdl_ttf'],
     package_data={'_sdl' : ['sdl.h', 'defines.h']},
-    setup_requires=["cffi>=1.1.0"],
-    install_requires=['cffi>=1.1.0'],
+    setup_requires=["cffi>=1.6.0"],
+    install_requires=['cffi>=1.6.0'],
     extras_require={
-        'build':['pycparser', 'cffi>=1.1.0'],
+        'build':['pycparser', 'astor', 'cffi>=1.6.0'],
         'doc':['sphinx'],
         ':sys_platform=="win32"': ['sdl2_lib']
         },
@@ -32,7 +34,7 @@ setup(name="pysdl2-cffi",
         "Programming Language :: Python :: 3.4",
         "License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)"
 	],
-    keywords=['sdl', 'cffi>=1.1'],
+    keywords=['sdl', 'cffi'],
     author="Daniel Holth",
     author_email="dholth@fastmail.fm",
     url="https://bitbucket.org/dholth/pysdl2-cffi")

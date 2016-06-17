@@ -1,4 +1,3 @@
-# 
 # Wheel generation from SCons.
 #
 # Daniel Holth <dholth@gmail.com>, 2016
@@ -32,9 +31,10 @@ import pytoml as toml
 metadata = dict(toml.load(open('pyproject.toml')))['tool']['wheel']
 
 # actually it should be the dictionary interface
-env = Environment(tools=['default', 'packaging', 'bdist'], 
+env = Environment(tools=['default', 'packaging', 'bdist'],
                   toolpath='.',
-                  PACKAGE_METADATA=metadata)
+                  PACKAGE_METADATA=metadata,
+                  WHEEL_TAG='cp27-none-linux_x86_64')
 
 def get_build_command(name):
     return sys.executable + " -m builder.build_" + name
@@ -104,7 +104,6 @@ Tag: cp27-none-linux_x86_64.whl
 
 env.Command('WHEEL', 'pyproject.toml', wheelmeta_builder)
 
-env['WHEEL_PATH'] = 'build/wheel'
 # avoid escaping problems with variable name followed by . :
 env['WHEEL_DATA'] = '$WHEEL_PATH/$PACKAGE_NAME_SAFE-' + env['PACKAGE_VERSION'] + '.data'
 env['DIST_INFO'] = '$WHEEL_PATH/$PACKAGE_NAME_SAFE-' + env['PACKAGE_VERSION'] + '.dist-info'
@@ -122,37 +121,4 @@ py_source = Glob('_sdl*/*.py') + Glob('sdl/*.py')
 py_dest = ['$WHEEL_PATH/' + s.get_path() for s in py_source]
 env.InstallAs(py_dest, py_source)
 
-whl = env.Zip(target = '$PACKAGE_NAME_SAFE-' + env['PACKAGE_VERSION'] + '-cp27-none-linux_x86_64.whl',
-              source = 'build/wheel/', ZIPROOT='build/wheel/')
-
-env.Clean(whl, env['WHEEL_PATH'])
-
-import base64
-
-def urlsafe_b64encode(data):
-    """urlsafe_b64encode without padding"""
-    return base64.urlsafe_b64encode(data).rstrip(b'=')
-
-def add_manifest(target, source, env):
-    """
-    Add the wheel manifest.
-    """
-    # os.path.relpath
-    import hashlib
-    import zipfile
-    archive = zipfile.ZipFile(target[0].get_path(), 'a')
-    lines = []
-    for f in archive.namelist():
-        print("File: %s" % f)
-        data = archive.read(f)
-        size = len(data)
-        digest = hashlib.sha256(data).digest()
-        digest = "sha256="+(urlsafe_b64encode(digest).decode('ascii'))
-        lines.append("%s,%s,%s" % (f.replace(',', ',,'), digest, size))
-
-    record_path = '%s-%s.dist-info/RECORD' % (env['PACKAGE_NAME_SAFE'], env['PACKAGE_VERSION'])
-    lines.append(record_path+',,')
-    RECORD = '\n'.join(lines)
-    archive.writestr(record_path, RECORD)
-
-env.AddPostAction(whl, Action(add_manifest))
+print([x.name for x in FindInstalledFiles()])

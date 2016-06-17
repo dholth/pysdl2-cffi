@@ -60,7 +60,7 @@ def main():
 
 
     # Create window and renderer for given surface
-    window = lib.SDL_CreateWindow("Chess Board", lib.SDL_WINDOWPOS_UNDEFINED, lib.SDL_WINDOWPOS_UNDEFINED, 640, 640, lib.SDL_WINDOW_SHOWN)
+    window = lib.SDL_CreateWindow(b"Chess Board", lib.SDL_WINDOWPOS_UNDEFINED, lib.SDL_WINDOWPOS_UNDEFINED, 640, 640, lib.SDL_WINDOW_SHOWN)
     if not window:
         lib.SDL_LogError(lib.SDL_LOG_CATEGORY_APPLICATION, "Window creation fail : %s\n" % (lib.SDL_GetError()))
         return 1

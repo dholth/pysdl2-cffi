@@ -30,11 +30,19 @@ import pytoml as toml
 
 metadata = dict(toml.load(open('pyproject.toml')))['tool']['wheel']
 
+# most specific binary, non-manylinux1 tag should be at the top of this list
+# TODO for pypy, the cffi version may be more important
+import wheel.pep425tags
+for tag in wheel.pep425tags.get_supported():
+    full_tag = '-'.join(tag)
+    if not 'manylinux' in tag:
+        break
+
 # actually it should be the dictionary interface
 env = Environment(tools=['default', 'packaging', 'bdist'],
                   toolpath='.',
                   PACKAGE_METADATA=metadata,
-                  WHEEL_TAG='cp27-none-linux_x86_64')
+                  WHEEL_TAG=full_tag)
 
 def get_build_command(name):
     return sys.executable + " -m builder.build_" + name
@@ -50,14 +58,16 @@ parts_targets = {'sdl': 'sdl/__init__.py',
                  'sdl_ttf': 'sdl/ttf.py',
                  }
 
-sdl = env.Command('sdl/__init__.py',
-    Glob("builder/*.py") + Glob("_sdl/*.py") + Glob("_sdl/*.h"),
-    get_build_command("sdl"))
+gen_source = True
+if gen_source:
+    sdl = env.Command('sdl/__init__.py',
+        Glob("builder/*.py") + Glob("_sdl/*.py") + Glob("_sdl/*.h"),
+        get_build_command("sdl"))
 
-for part in ('image', 'mixer', 'ttf'):
-    env.Command(parts_targets[part],
-        sdl + Glob("builder/*.py") + Glob("_sdl_%s/*.py" % part) + Glob("_sdl_%s/*.h" % part),
-        get_build_command(part))
+    for part in ('image', 'mixer', 'ttf'):
+        env.Command(parts_targets[part],
+            sdl + Glob("builder/*.py") + Glob("_sdl_%s/*.py" % part) + Glob("_sdl_%s/*.h" % part),
+            get_build_command(part))
 
 from distutils import dist
 from distutils.command.build_ext import build_ext

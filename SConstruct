@@ -26,23 +26,28 @@
 # the pysdl2-cffi binding is GPL.
 
 import sys
+from distutils import sysconfig
 import pytoml as toml
+import enscons
 
-metadata = dict(toml.load(open('pyproject.toml')))['tool']['wheel']
+metadata = dict(toml.load(open('pyproject.toml')))['tool']['enscons']
 
 # most specific binary, non-manylinux1 tag should be at the top of this list
-# TODO for pypy, the cffi version may be more important
 import wheel.pep425tags
 for tag in wheel.pep425tags.get_supported():
     full_tag = '-'.join(tag)
     if not 'manylinux' in tag:
         break
 
-# actually it should be the dictionary interface
-env = Environment(tools=['default', 'packaging', 'bdist'],
-                  toolpath='.',
+env = Environment(tools=['default', 'packaging', enscons.generate],
                   PACKAGE_METADATA=metadata,
-                  WHEEL_TAG=full_tag)
+                  WHEEL_TAG=full_tag,
+                  ROOT_IS_PURELIB=False)
+
+env.Append(CPPPATH=[sysconfig.get_python_inc()])
+env.Append(LIBPATH=[sysconfig.get_config_var('LIBDIR')])
+
+PYTHON_LIBS = ['python' + sysconfig.get_config_var('VERSION')]
 
 def get_build_command(name):
     return sys.executable + " -m builder.build_" + name
@@ -83,11 +88,11 @@ for part in ('sdl', 'sdl_image', 'sdl_mixer', 'sdl_ttf'):
     ext = build_ext(dist.Distribution(dict(name='__%s' % part)))
 
     FRAMEWORKS = []
-    LIBS = []
+    LIBS = PYTHON_LIBS
     if sys.platform == 'darwin':
-         FRAMEWORKS = Split("SDL2 SDL2_image SDL2_mixer SDL2_ttf") # OSX
+        FRAMEWORKS = Split("SDL2 SDL2_image SDL2_mixer SDL2_ttf") # OSX
     else:
-        LIBS = _extension_args(part.rsplit('_')[-1])['libraries']
+        LIBS += _extension_args(part.rsplit('_')[-1])['libraries']
 
     modules.append(env.LoadableModule(
             ext.get_ext_filename('__%s' % part),
@@ -101,34 +106,12 @@ package = env.Package(
         NAME=env['PACKAGE_NAME'],
         VERSION=env['PACKAGE_METADATA']['version'],
         PACKAGETYPE='src_zip',
-        source=FindSourceFiles() + ['PKG-INFO']
+        source=FindSourceFiles() + ['PKG-INFO'],
+        target=['dist/' + env['PACKAGE_NAME'] + '-' + env['PACKAGE_VERSION']],
         )
 
-def wheelmeta_builder(target, source, env):
-    with open(target[0].get_path(), 'w') as f:
-        f.write("""Wheel-Version: 1.0
-Generator: SConstruct (0.0.1)
-Root-Is-Purelib: false
-Tag: cp27-none-linux_x86_64.whl
-""")
-
-env.Command('WHEEL', 'pyproject.toml', wheelmeta_builder)
-
-# avoid escaping problems with variable name followed by . :
-env['WHEEL_DATA'] = '$WHEEL_PATH/$PACKAGE_NAME_SAFE-' + env['PACKAGE_VERSION'] + '.data'
-env['DIST_INFO'] = '$WHEEL_PATH/$PACKAGE_NAME_SAFE-' + env['PACKAGE_VERSION'] + '.dist-info'
-
-env.Command('$DIST_INFO/WHEEL', 'pyproject.toml', wheelmeta_builder)
-
-env.InstallAs('$DIST_INFO/METADATA', 'METADATA')
-# env.InstallAs('$DIST_INFO/WHEEL', 'WHEEL')
-
 for module in modules:
-    # assume there's only one file per module...
-    env.InstallAs('$WHEEL_PATH/' + module[0].get_path(), [module])
+    env.Whl('platlib', module)
 
 py_source = Glob('_sdl*/*.py') + Glob('sdl/*.py')
-py_dest = ['$WHEEL_PATH/' + s.get_path() for s in py_source]
-env.InstallAs(py_dest, py_source)
-
-print([x.name for x in FindInstalledFiles()])
+env.Whl('platlib', py_source)

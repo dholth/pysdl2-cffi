@@ -1,21 +1,13 @@
 # Example build requirements folling build-deps-pep
 [build-system]
-requires = ["cffi", "SCons>=2.5.0", "toml"]
+requires = ["cffi", "enscons", "pycparser", "astor"]
 
-[tool.wheel]
+[tool.enscons]
 name="pysdl2-cffi"
 version="0.10.0"
 packages=['sdl', '_sdl', '_sdl_image', '_sdl_mixer', '_sdl_ttf']
-setup_requires=["cffi>=1.6.0"]
-install_requires=["cffi>=1.6.0"]
-cffi_modules=[
-  "_sdl/cdefs.py:ffi",
-  "_sdl_image/cdefs.py:ffi",
-  "_sdl_mixer/cdefs.py:ffi",
-  "_sdl_ttf/cdefs.py:ffi",
-]
 description="SDL2 wrapper with cffi"
-# long_description=README + CHANGES
+description_file="README.rst"
 license="GPLv2+"
 classifiers=[
   "Programming Language :: Python :: 2.7",

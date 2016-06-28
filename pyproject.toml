@@ -20,7 +20,7 @@ author="Daniel Holth"
 author_email="dholth@fastmail.fm"
 url="https://bitbucket.org/dholth/pysdl2-cffi"
 
-[tool.wheel.extras_require]
+[tool.enscons.extras_require]
 build = ['pycparser', 'astor', 'cffi>=1.6.0']
 doc = ['sphinx']
 ":sys_platform=='win32'" = ["sdl2_lib"]

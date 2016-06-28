@@ -26,6 +26,7 @@
 # the pysdl2-cffi binding is GPL.
 
 import sys
+import sysconfig as syscfg
 from distutils import sysconfig
 import pytoml as toml
 import enscons
@@ -47,7 +48,7 @@ env = Environment(tools=['default', 'packaging', enscons.generate],
 env.Append(CPPPATH=[sysconfig.get_python_inc()])
 env.Append(LIBPATH=[sysconfig.get_config_var('LIBDIR')])
 
-PYTHON_LIBS = ['python' + sysconfig.get_config_var('VERSION')]
+PYTHON_LIBS = ['python' + syscfg.get_config_var('py_version_short')]
 
 def get_build_command(name):
     return sys.executable + " -m builder.build_" + name

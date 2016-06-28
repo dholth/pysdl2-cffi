@@ -6,6 +6,8 @@ import collections
 import re
 import types
 
+types.TypeType = type
+
 from ast import *
 import astor
 
@@ -159,7 +161,7 @@ class Builder(object):
 
     def handle_struct_ast(self, output, declaration_name, declaration):
         c_name = declaration.get_c_name()
-        py_name = self.renamer.rename(c_name, types.TypeType)
+        py_name = self.renamer.rename(c_name, type)
         struct = struct_def(py_name, "Wrap `%s`" % c_name, c_name, declaration.fldnames or [])
 
         def handle_fields():
@@ -169,7 +171,7 @@ class Builder(object):
                 if fldtype.has_c_name():
                     fld_c_name = fldtype.get_c_name()
                 else:
-                    print "XXX", declaration, fldname, fldtype.has_c_name()
+                    print("XXX", declaration, fldname, fldtype.has_c_name())
                     fld_c_name = None
 
                 if (is_direct(fldtype) 
@@ -177,7 +179,7 @@ class Builder(object):
                         or fld_c_name == 'void *'):
                     struct.body.extend(struct_plain_field(fldname))
                 elif hasattr(fldtype, 'item'):
-                    print declaration, "Has item", i, fldname, fldtype
+                    print(declaration, "Has item", i, fldname, fldtype)
                     struct.body.extend(struct_plain_field(fldname))
                 elif not is_primitive_or_primitive_p(fldtype):
                     try:
@@ -186,11 +188,11 @@ class Builder(object):
                         struct.body.extend(struct_boxed_field(fldname, field_py_name, base_name))
                     except Exception as e:
                         # Mostly function pointers
-                        print declaration, "Exception", i, fldname, e
+                        print(declaration, "Exception", i, fldname, e)
                         struct.body.extend(struct_plain_field(fldname))
                         # some of these may by read-only
                 else:
-                    print declaration, "Unhandled", c_name, fldname, fldtype
+                    print(declaration, "Unhandled", c_name, fldname, fldtype)
                     struct.body.extend(struct_plain_field(fldname))
 
         # Add @property wrappers for fields

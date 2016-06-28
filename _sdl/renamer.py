@@ -24,7 +24,7 @@ class Renamer(object):
         elif not name.startswith(self.prefix):
             if not name in self.whitelist:
                 # return None
-                print "Would have discarded %s" % name
+                print("Would have discarded %s" % name)
             return name
         elif isinstance(value, type):
             pretty_name = name[4:]

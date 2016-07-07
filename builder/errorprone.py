@@ -130,7 +130,7 @@ error_handlers =  ["if rc == -1: raise SDLError()",
                    "if rc == 0: raise SDLError()",
                    "if rc == ffi.NULL: raise SDLError()"]
 
-error_key = zip((return_neg1, return_zero, return_null), error_handlers)
+error_key = list(zip((return_neg1, return_zero, return_null), error_handlers))
 
 def handler_for_function(fname):
     for functions, handler in error_key:

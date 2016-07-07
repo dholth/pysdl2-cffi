@@ -1,5 +1,10 @@
 from ast import *
 
+try:
+    TryExcept
+except NameError:
+    TryExcept = Try # Python 3
+
 def struct_def(name, docstring, c_name, fields):
     return ClassDef(name=name, bases=[Name(id='Struct')],
         body=[Expr(value=Str(s=docstring)),
@@ -50,6 +55,7 @@ def struct_boxed_field(name, wrapper_class_name, c_type):
             args=arguments(args=[Name(id='self'), Name(id='value')], vararg=None, kwarg=None, defaults=[]),
             body=[
                 TryExcept(
+                    finalbody=None,
                     body=[
                         Assign(
                             targets=[

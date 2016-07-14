@@ -29,26 +29,19 @@ import sys
 import sysconfig as syscfg
 from distutils import sysconfig
 import pytoml as toml
-import enscons
+import enscons, enscons.cpyext
 
 metadata = dict(toml.load(open('pyproject.toml')))['tool']['enscons']
 
 # most specific binary, non-manylinux1 tag should be at the top of this list
+# most specific binary, non-manylinux1 tag should be at the top of this list
 import wheel.pep425tags
-for tag in wheel.pep425tags.get_supported():
-    full_tag = '-'.join(tag)
-    if not 'manylinux' in tag:
-        break
+full_tag = '-'.join(next(tag for tag in wheel.pep425tags.get_supported() if not 'manylinux' in tag))
 
-env = Environment(tools=['default', 'packaging', enscons.generate],
+env = Environment(tools=['default', 'packaging', 
+                    enscons.generate, enscons.cpyext.generate],
                   PACKAGE_METADATA=metadata,
-                  WHEEL_TAG=full_tag,
-                  ROOT_IS_PURELIB=False)
-
-env.Append(CPPPATH=[sysconfig.get_python_inc()])
-env.Append(LIBPATH=[sysconfig.get_config_var('LIBDIR')])
-
-PYTHON_LIBS = ['python' + syscfg.get_config_var('py_version_short')]
+                  WHEEL_TAG=full_tag)
 
 def get_build_command(name):
     return sys.executable + " -m builder.build_" + name
@@ -89,7 +82,7 @@ for part in ('sdl', 'sdl_image', 'sdl_mixer', 'sdl_ttf'):
     ext = build_ext(dist.Distribution(dict(name='__%s' % part)))
 
     FRAMEWORKS = []
-    LIBS = PYTHON_LIBS
+    LIBS = []
     if sys.platform == 'darwin':
         FRAMEWORKS = Split("SDL2 SDL2_image SDL2_mixer SDL2_ttf") # OSX
     else:
@@ -103,16 +96,14 @@ for part in ('sdl', 'sdl_image', 'sdl_mixer', 'sdl_ttf'):
             LIBS = LIBS
             ))
 
-package = env.Package(
-        NAME=env['PACKAGE_NAME'],
-        VERSION=env['PACKAGE_METADATA']['version'],
-        PACKAGETYPE='src_zip',
-        source=FindSourceFiles() + ['PKG-INFO'],
-        target=['dist/' + env['PACKAGE_NAME'] + '-' + env['PACKAGE_VERSION']],
-        )
+sdist = env.SDist(source=FindSourceFiles() + ['PKG-INFO'])
+
+wheelfiles = []
 
 for module in modules:
-    env.Whl('platlib', module)
+    wheelfiles.extend(env.Whl('platlib', module))
 
 py_source = Glob('_sdl*/*.py') + Glob('sdl/*.py')
-env.Whl('platlib', py_source)
+wheelfiles.extend(env.Whl('platlib', py_source))
+
+whl = env.WhlFile(source=wheelfiles)

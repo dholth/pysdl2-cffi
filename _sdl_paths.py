@@ -15,7 +15,8 @@ if system == "Windows":
         'sdl_h':'SDL.h',
         'sdl_image_h':'SDL_image.h', 
         'sdl_mixer_h':'SDL_mixer.h',         
-        'sdl_ttf_h':'SDL_ttf.h'
+        'sdl_ttf_h':'SDL_ttf.h',
+        'sdl_gfx_h':'SDL2_gfxPrimitives.h',
     } 
 
 elif system == "Darwin":
@@ -24,7 +25,8 @@ elif system == "Darwin":
         'sdl_h':'SDL2/SDL.h',
         'sdl_image_h':'SDL2_image/SDL_image.h', 
         'sdl_mixer_h':'SDL2_mixer/SDL_mixer.h',         
-        'sdl_ttf_h':'SDL2_ttf/SDL_ttf.h'
+        'sdl_ttf_h':'SDL2_ttf/SDL_ttf.h',
+        'sdl_gfx_h':'SDL2_gfx/SDL2_gfxPrimitives.h',
     }
 
 else:
@@ -33,7 +35,8 @@ else:
         'sdl_h':'SDL2/SDL.h',
         'sdl_image_h':'SDL2/SDL_image.h', 
         'sdl_mixer_h':'SDL2/SDL_mixer.h',         
-        'sdl_ttf_h':'SDL2/SDL_ttf.h'
+        'sdl_ttf_h':'SDL2/SDL_ttf.h',
+        'sdl_gfx_h':'SDL2/SDL2_gfxPrimitives.h',
     }
 
 def make_absolute(paths):
@@ -79,6 +82,7 @@ def _extension_args(libname):
             "image" : {"libraries":["SDL2", "SDL2_image"], },
             "mixer" : {"libraries":["SDL2", "SDL2_mixer"], },
             "ttf"   : {"libraries":["SDL2", "SDL2_ttf"], },
+            "gfx"   : {"libraries":["SDL2", "SDL2_gfx"], },
         }[libname]
 
     args.update(compiler_args)

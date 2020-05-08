@@ -88,7 +88,7 @@ for part in ('sdl', 'sdl_image', 'sdl_mixer', 'sdl_ttf'):
     else:
         LIBS += _extension_args(part.rsplit('_')[-1])['libraries']
 
-    modules.append(env.LoadableModule(
+    modules.append(env.SharedLibrary(
             ext.get_ext_filename('__%s' % part),
             ['__%s.c' % part],
             LIBPREFIX = '',
